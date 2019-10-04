@@ -1,6 +1,10 @@
 import pytest
 from auth_logout import *
 
+
+#dummy test cases for logout (since no return value) 
+
+
 def test_auth_logout1():
     #create a test account
     register = auth_register("Someemial@hotmail.com.au", "Hello123", "First", "Last")

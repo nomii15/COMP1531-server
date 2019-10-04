@@ -18,5 +18,4 @@ def auth_passwordreset_reset(reset_code, new_password):
     if len(new_password) < 5 or len(new_password) == 0:
         raise ValueError("Invalid Password Length")
     
-    #dummy check for successful     
-    return "Password Reset"          
+    #if it gets here the password should be successfully changed         

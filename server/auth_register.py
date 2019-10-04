@@ -15,19 +15,25 @@ name_last is more than 50 characters
 
 def auth_register(email, password, name_first, name_last):
 
-    if email_check(email) == "Invalid Email":
-        raise ValueError("Invalid Email Address")
-        
-    if email == "z5160026@unsw.edu.au":
-        raise ValueError("Email Already Exists")    
+   #check if valid email
+   if email_check(email) == "Invalid Email":
+       raise ValueError("Invalid Email Address")
     
-    if len(password) < 5:
-        raise ValueError("Invalid Password Length")
+   #dummy case to check email already has a account created    
+   if email == "z5160026@unsw.edu.au":
+       raise ValueError("Email Already Exists")    
+    
+   #password length check
+   if len(password) < 5:
+       raise ValueError("Invalid Password Length")
         
-    if len(name_first) > 50 or len(name_first) == 0:
-        raise ValueError("Invalid First Name Length")
-        
-    if len(name_last) > 50 or len(name_last) == 0:
-        raise ValueError("Invalid Last Name Length")            
-
-    return {0,"#"}
+   #first name length check    
+   if len(name_first) > 50 or len(name_first) == 0:
+       raise ValueError("Invalid First Name Length")
+    
+   #last name length check   
+   if len(name_last) > 50 or len(name_last) == 0:
+       raise ValueError("Invalid Last Name Length")            
+   
+   #dummy return token and user id
+   return {0,"#"}
