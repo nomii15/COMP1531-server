@@ -23,3 +23,6 @@ Assumptions
 11) The email address and u_id for error testing are all invalid.
 
 12) In function channel_details, the return dictionary all_members includes the owners and it is ordered by the sequence of entrance.
+
+13) In message_react and message_unreact, and invalid react integer was assumed to be -1
+
