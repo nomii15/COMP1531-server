@@ -1,5 +1,5 @@
 import pytest
-from auth_passwordreset_request import *
+from auth_passwordreset_request import auth_passwordreset_request
 
 
 #invalid email
@@ -28,8 +28,9 @@ def test_auth_passwordreset_request3():
     register = auth_register("Someemial@hotmail.com.au", "Hello123", "First", "Last")
     
     #ask for a password reset
-    auth_passwordreset_request("Someemail@hotmail.com.au")
+    assert auth_passwordreset_request("Someemail@hotmail.com.au") == "ABS123"
     
-    #this test should work and send a code to the users email address
+    #this test should work and send a code to the users email address, with the 
+    #assumption that the code is ABS123
     
          

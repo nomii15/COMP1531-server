@@ -1,4 +1,4 @@
-from auth_passwordreset_reset import *
+from auth_passwordreset_reset import auth_passwordreset_reset
 import pytest
 
 
@@ -45,5 +45,7 @@ def test_auth_passwordreset_reset3():
     #assume that the code generated was "AUW624"
     auth_passwordreset_reset("AUW624", "Valispass12") 
     
+    #test to see if password updated
+    assert new_user_password == "Valispass12"
     #this sequence should successfully reset the password
                    

@@ -1,4 +1,4 @@
-from search import *
+from search import search
 import pytest
 
 def test_search1():
@@ -8,10 +8,15 @@ def test_search1():
     
     #get the token
     token = register['token']
-    
+    query = "Hello"
     #this should return a collection of message that 
     #contain or partially the string "Hello"
-    dictionary{} = search(token, "Hello")
+    dictionary{} = search(token, query)
+    
+    #test to see if the query string used found messages in channels
+    #even if the message is a prefix of the query string
+    
+    assert query.startswith(query, 0,len(query)) in dictionary.items()
     
     
 #invalid token    

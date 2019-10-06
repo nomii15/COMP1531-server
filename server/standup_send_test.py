@@ -1,4 +1,4 @@
-from standup_send import *
+from standup_send import standup_send
 import pytest
 
 #valid case
@@ -7,6 +7,8 @@ def test_standup_send1():
     test_login = auth_register("z5110036@unsw.edu.au", "1234567", "John", "Smith")
    
     token = test_login['token']
+    
+    message = "Hello"
     
     #generate a channel
     channel = channels_create(token, "name", True)
@@ -19,7 +21,11 @@ def test_standup_send1():
     standup_start(token, Id)
     
     #send a message to the queue
-    standup_send(token, Id, "hello")
+    standup_send(token, Id, message)
+    
+    #check the buffer for the message to see if operating correctly
+    #assume the dictionary returned was dictionary
+    assert message in dictionary.items()
     
     #this sequence would successfully call the standup functions and record the message during that time period
 

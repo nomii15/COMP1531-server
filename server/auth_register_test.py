@@ -1,4 +1,4 @@
-from auth_register import *
+from auth_register import auth_register
 import pytest
 
 '''

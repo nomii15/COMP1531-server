@@ -1,6 +1,6 @@
 ##auth login test file
 
-from auth_login import *
+from auth_login import auth_login
 import pytest
 
 #checking for bad email addresses

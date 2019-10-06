@@ -1,4 +1,4 @@
-from standup_strt import *
+from standup_start import standup_start
 import pytest
 
 #working setup
