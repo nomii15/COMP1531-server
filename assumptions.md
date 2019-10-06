@@ -27,3 +27,6 @@ Assumptions
 13) In message_react and message_unreact, and invalid react integer was assumed to be -1
 
 14) In admin_userpermission_change, the invalid permission integer was assumed to be 5.
+
+15) In testing for channel functions in the case 'channel id does not exist', the invalid channel id was assumed to be 1.
+
