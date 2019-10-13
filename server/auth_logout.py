@@ -8,4 +8,18 @@ N/A
 
 
 def auth_logout(token):
-    pass             
+
+    # create the dictionary
+    ret = {}
+    # if the token is a valid token, delete the token and return true
+    # otherwise, return false
+    if token == valid_token:
+        del(token)
+        ret['is_success'] = True
+    else:
+        ret['is_success'] = False
+
+    # return the dictionary
+    return ret    
+
+
