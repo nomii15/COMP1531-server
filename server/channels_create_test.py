@@ -32,4 +32,4 @@ def test_long_name():
     
     #name is more than 20 characters long
     with pytest.raises(ValueError,match=r"*"):
-        channels_create(token1, thisisaverylongnamehehe, True))
+        channels_create(token1, thisisaverylongnamehehe, True)
