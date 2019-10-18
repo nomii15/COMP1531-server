@@ -62,12 +62,13 @@ def auth_register():
     user = getUsers()
 
 
-    u_id = name_first.lower() + name_last.lower()
-    u_id = ''.join(u_id)
+    #u_id = name_first.lower() + name_last.lower()
+    #u_id = ''.join(u_id)
+    u_id = user
 
      # if the u_id is greater than 20 character, reduce
-    if len(u_id)>20:
-        u_id = u_id[0:19]
+   # if len(u_id)>20:
+   #     u_id = u_id[0:19]
 
     data['users'][user] = {'email': email, 'password': hashlib.sha256(password.encode()), 'name_first': name_first,
      'name_last': name_last, 'u_id': u_id, 'loggedin': True}
@@ -87,6 +88,6 @@ def auth_register():
     #ret['u_id'] = u_id
     token = jwt.encode({'u_id':u_id}, SECRET, algorithm='HS256').decode('utf-8')
     ret  = {u_id, token}
-    print(ret)
-    return dumps(ret)
-
+  
+    #print(ret)
+    return dumps({u_id: token})

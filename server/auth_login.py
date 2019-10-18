@@ -35,6 +35,8 @@ def auth_login():
     i = 0
     global data
     data = getData()
+    global user
+    user = getUser()
     #print("============")
     #print(data)
     #print("============")
@@ -45,19 +47,20 @@ def auth_login():
             if pas['password'].hexdigest() == hashlib.sha256(password.encode()).hexdigest():
                 # login and break
                 #ret = {}
-                u_id = pas['name_first'].lower() + pas['name_last'].lower()
-                u_id = ''.join(u_id)
+                #u_id = pas['name_first'].lower() + pas['name_last'].lower()
+                #u_id = ''.join(u_id)
                 #ret['u_id'] = u_id
                 pas['loggedin'] = True
+                u_id = user
                 # if the u_id is greater than 20 character, reduce
-                if len(u_id)>20:
-                    u_id = u_id[0:19]
+                #if len(u_id)>20:
+                #    u_id = u_id[0:19]
                 global SECRET    
                 SECRET = getSecret()    
                 token = jwt.encode({'u_id': u_id}, SECRET, algorithm='HS256').decode('utf-8')
                 ret = {u_id, token}
-                print(ret)
-                return dumps(ret)
+                #print(ret)
+                return dumps({u_id : token})
             else:
                 raise ValueError("Invalid Password")
         else:

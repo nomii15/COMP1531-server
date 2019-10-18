@@ -1,11 +1,18 @@
 """Flask server"""
 import sys
+from flask_cors import CORS
 from json import dumps
 from flask import Flask, request
+
+sys.path.insert(0,'/tmp_amd/cage/export/cage/3/z5110036/comp1531/project/W15A-DJMN/server/')
+from auth_login import auth_login
+from auth_logout import auth_logout
+from auth_register import auth_register
 
 
 
 APP = Flask(__name__)
+CORS(APP)
 
 @APP.route('/echo/get', methods=['GET'])
 def echo1():
@@ -23,16 +30,17 @@ def echo2():
 
 @APP.route('/auth/register', methods=['POST'])
 def register():
-    return server.auth_register()
+    return auth_register()
 
 @APP.route('/auth/login', methods=['POST'])
 def login():
-    return server.auth_login()
+    return auth_login()
 
 @APP.route('/auth/logout', methods=['POST'])
 def logout():
-    return server.auth_logout()        
+    return auth_logout()        
 
 
 if __name__ == '__main__':
     APP.run(port=(sys.argv[1] if len(sys.argv) > 1 else 5000))
+
