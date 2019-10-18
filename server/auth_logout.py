@@ -15,7 +15,6 @@ N/A
 def auth_logout():
 
     # create the dictionary
-    ret
     # if the token is a valid token, delete the token and return true
     # otherwise, return false
 
@@ -29,9 +28,9 @@ def auth_logout():
 
     if token_check(token):
         for key, users in data['users'].items():
-            if users['u_id'] == jwt.decode(token, SECRET, algorithm='HS256'):
+            if {'u_id': users['u_id']} == jwt.decode(token, SECRET, algorithm='HS256'):
                 # user is a valid user
-                users['logginin'] = False
+                users['loggedin'] = False
                 ret = True
                 return dumps(ret)
                 

@@ -21,7 +21,7 @@ name_last is more than 50 characters
 '''
 
 
-@APP.route('/auth/register', methods=['POST'])
+#@APP.route('/auth/register', methods=['POST'])
 def auth_register():
 
     email = request.form.get('email')
@@ -85,7 +85,7 @@ def auth_register():
     SECRET = getSecret()
 
     ret['u_id'] = u_id
-    ret['token'] = jwt.encode(u_id, SECRET, algorithm='HS256').decode('utf-8')
+    ret['token'] = jwt.encode({'u_id':u_id}, SECRET, algorithm='HS256').decode('utf-8')
 
     return dumps(ret)
 
