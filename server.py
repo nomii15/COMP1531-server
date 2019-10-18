@@ -1,11 +1,13 @@
 """Flask server"""
 import sys
+from flask_cors import CORS
 from json import dumps
 from flask import Flask, request
 
 
 
 APP = Flask(__name__)
+CORS(APP)
 
 @APP.route('/echo/get', methods=['GET'])
 def echo1():
