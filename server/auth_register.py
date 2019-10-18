@@ -4,7 +4,9 @@ from flask import Flask, request
 from json import dumps
 import jwt
 import hashlib
-import auth_login
+
+# importing the data file
+from data import *
 
 
 '''
@@ -18,33 +20,6 @@ name_first is more than 50 characters
 name_last is more than 50 characters
 '''
 
-APP = Flask(__name__)
-
-SECRET = 'COMP1531'
-
-# global variable for users
-
-user = 0
-data = {
-    'users': {} 
-}
-
-def getData():
-    global data
-    return data
-
-def getSecret():
-    global SECRET
-    return SECRET    
-
-def getUsers():
-    global user
-    return user
-
-def incUser():
-    global user
-    user+=1        
-
 
 @APP.route('/auth/register', methods=['POST'])
 def auth_register():
@@ -57,7 +32,7 @@ def auth_register():
     #check if valid email
     if email_check(email) == "Invalid Email":
         raise ValueError("Invalid Email Address")
-    
+
     #password length check
     if len(password) < 5:
         raise ValueError("Invalid Password Length")
@@ -74,10 +49,28 @@ def auth_register():
     # add user dictionary to add to the global dictionary
 
     # create new user to the data dictionary, need to check syntax
+    global data
     data = getData()
+
+    # check to see if the email is already registered
+    for em,pas in data['users'].items():
+        if pas['email'] == email:
+            raise ValueError("Email already exists")
+
+    # if it gets here, its a valid user
+    global user
     user = getUsers()
+
+
+    u_id = name_first.lower() + name_last.lower()
+    u_id = ''.join(u_id)
+
+     # if the u_id is greater than 20 character, reduce
+    if len(u_id)>20:
+        u_id = u_id[0:19]
+
     data['users'][user] = {'email': email, 'password': hashlib.sha256(password.encode()), 'name_first': name_first,
-     'name_last': name_last}
+     'name_last': name_last, 'u_id': u_id, 'loggedin': True}
     incUser()
 
     #think about implementing a variable for u_id within data
@@ -85,24 +78,14 @@ def auth_register():
 
     # return a dictionary of u_id and token
     ret = {}
-    u_id = name_first.lower() + name_last.lower()
-    u_id = ''.join(u_id)
 
-    # if the u_id is greater than 20 character, reduce
-    if len(u_id)>20:
-        u_id = u_id[0:19]
+   
 
+    global SECRET
     SECRET = getSecret()
 
     ret['u_id'] = u_id
-    ret['token'] = jwt.encode({'u_id': ret['u_id']}, SECRET, algorithm='HS256').decode('utf-8')
+    ret['token'] = jwt.encode(u_id, SECRET, algorithm='HS256').decode('utf-8')
 
     return dumps(ret)
 
-@APP.route('/auth/login', methods=['POST'])
-def login():
-    
-    auth_login.auth_login()
-
-if __name__ == '__main__':
-    APP.run(port=20000, debug=True)
