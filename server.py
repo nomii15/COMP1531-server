@@ -2,7 +2,7 @@
 import sys
 from json import dumps
 from flask import Flask, request
-import sys
+
 
 APP = Flask(__name__)
 
