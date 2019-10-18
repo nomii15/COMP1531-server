@@ -77,15 +77,16 @@ def auth_register():
     #currently, two names may clash
 
     # return a dictionary of u_id and token
-    ret = {}
+    #ret = {}
 
    
 
     global SECRET
     SECRET = getSecret()
 
-    ret['u_id'] = u_id
-    ret['token'] = jwt.encode({'u_id':u_id}, SECRET, algorithm='HS256').decode('utf-8')
-
+    #ret['u_id'] = u_id
+    token = jwt.encode({'u_id':u_id}, SECRET, algorithm='HS256').decode('utf-8')
+    ret  = {u_id, token}
+    print(ret)
     return dumps(ret)
 

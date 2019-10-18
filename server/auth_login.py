@@ -44,17 +44,19 @@ def auth_login():
         if pas['email'] == email:
             if pas['password'].hexdigest() == hashlib.sha256(password.encode()).hexdigest():
                 # login and break
-                ret = {}
+                #ret = {}
                 u_id = pas['name_first'].lower() + pas['name_last'].lower()
                 u_id = ''.join(u_id)
-                ret['u_id'] = u_id
+                #ret['u_id'] = u_id
                 pas['loggedin'] = True
                 # if the u_id is greater than 20 character, reduce
                 if len(u_id)>20:
                     u_id = u_id[0:19]
                 global SECRET    
                 SECRET = getSecret()    
-                ret['token'] = jwt.encode({'u_id': u_id}, SECRET, algorithm='HS256').decode('utf-8')
+                token = jwt.encode({'u_id': u_id}, SECRET, algorithm='HS256').decode('utf-8')
+                ret = {u_id, token}
+                print(ret)
                 return dumps(ret)
             else:
                 raise ValueError("Invalid Password")
