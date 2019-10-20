@@ -28,6 +28,10 @@ def getUsers():
     global user
     return user
 
+def getChannels():
+    global channel
+    return channel
+
 def incUser():
     global user
     user+=1        
