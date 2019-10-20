@@ -21,6 +21,10 @@ APP.register_blueprint(logout)
 def echo4():
     pass
 
+@APP.route('/auth/register', methods=['POST'])
+def echo4():
+    pass
+
 @APP.route('/echo/get', methods=['GET'])
 def echo1():
     """ Description of function """
