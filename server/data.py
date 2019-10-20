@@ -6,10 +6,15 @@ SECRET = 'COMP1531'
 global user
 user = 0
 
+global channel
+channel = 0
+
 global data
 data = {
     'users': {} 
+    'channels' : {}
 }
+
 
 def getData():
     global data
@@ -26,3 +31,7 @@ def getUsers():
 def incUser():
     global user
     user+=1        
+
+def incChannel():
+    global channel
+    channel+=1 
