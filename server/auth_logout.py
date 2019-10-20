@@ -1,5 +1,5 @@
 ##auth logout implementation
-from flask import Flask, request
+from flask import Flask, request, Blueprint
 from json import dumps
 import jwt
 
@@ -10,8 +10,8 @@ Given an active token, invalidates the taken to log the user out. Given a non-va
 
 N/A
 '''
-
-# @APP.route('/auth/logout', methods=['POST'])
+logout = Blueprint('APP_logout', __name__)
+@logout.route('/auth/logout', methods=['POST'])
 def auth_logout():
 
     # create the dictionary

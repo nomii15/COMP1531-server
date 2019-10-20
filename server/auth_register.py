@@ -1,6 +1,6 @@
 #definition auth_register function
 from email_check import email_check
-from flask import Flask, request
+from flask import Flask, request, Blueprint
 from json import dumps
 import jwt
 import hashlib
@@ -20,15 +20,18 @@ name_first is more than 50 characters
 name_last is more than 50 characters
 '''
 
+register = Blueprint('APP_register', __name__)
 
-#@APP.route('/auth/register', methods=['POST'])
+@register.route('/auth/register', methods=['POST'])
 def auth_register():
 
+    
     email = request.form.get('email')
     password = request.form.get('password')
     name_first = request.form.get('name_first')
     name_last = request.form.get('name_last')
 
+    
     #check if valid email
     if email_check(email) == "Invalid Email":
         raise ValueError("Invalid Email Address")
@@ -87,7 +90,9 @@ def auth_register():
 
     #ret['u_id'] = u_id
     token = jwt.encode({'u_id':u_id}, SECRET, algorithm='HS256').decode('utf-8')
-    ret  = {u_id, token}
+    ret  = dict()
+    ret['u_id'] = u_id
+    ret['token'] = token
   
     #print(ret)
-    return dumps({u_id: token})
+    return dumps(ret)

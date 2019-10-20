@@ -1,7 +1,7 @@
 ##auth_login definition
 from email_check import email_check
 # import the function and the global dictionary
-from flask import Flask, request
+from flask import Flask, request, Blueprint
 from json import dumps
 import jwt
 import hashlib
@@ -18,8 +18,8 @@ Email entered does not belong to a user
 '''
 
 
-
-#@APP.route('/auth/login', methods=['POST'])
+login = Blueprint('APP_login', __name__)
+@login.route('/auth/login', methods=['POST'])
 def auth_login():
     
     email = request.form.get('email')    
@@ -58,9 +58,12 @@ def auth_login():
                 global SECRET    
                 SECRET = getSecret()    
                 token = jwt.encode({'u_id': u_id}, SECRET, algorithm='HS256').decode('utf-8')
-                ret = {u_id, token}
+                ret = dict()
+                ret['u_id'] = u_id
+                ret['token'] = token
+                #ret = {u_id, token}
                 #print(ret)
-                return dumps({u_id : token})
+                return dumps(ret)
             else:
                 raise ValueError("Invalid Password")
         else:
