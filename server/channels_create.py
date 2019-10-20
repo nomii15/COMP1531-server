@@ -1,3 +1,9 @@
+#definition channels_create function
+from flask import Flask, request, Blueprint
+
+# importing the data file
+from data import *
+
 '''
 Creates a new channel with that name that is either a public or private channel
 
