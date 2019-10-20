@@ -13,6 +13,7 @@ global data
 data = {
     'users': {} 
     'channels' : {}
+    'channel_details' : {}
 }
 
 
