@@ -4,20 +4,20 @@ from flask_cors import CORS
 from json import dumps
 from flask import Flask, request
 
-'''
+
 sys.path.insert(0,'/tmp_amd/cage/export/cage/3/z5110036/comp1531/project/W15A-DJMN/server/')
 from auth_login import login
 from auth_logout import logout
 from auth_register import register
-'''
+
 
 APP = Flask(__name__)
 CORS(APP)
-'''
 APP.register_blueprint(register)
 APP.register_blueprint(login)
 APP.register_blueprint(logout)
-'''
+
+
 
 @APP.route('/auth/register', methods=['POST'])
 def echo4():
