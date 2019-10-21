@@ -11,9 +11,9 @@ channel = 0
 
 global data
 data = {
-    'users': {} 
-    'channels' : {}
-    'channel_details' : {}
+    'users': {},
+    'channels' : {},
+    'channel_details' : {},
 }
 
 
