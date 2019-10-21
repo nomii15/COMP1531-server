@@ -36,7 +36,7 @@ def auth_login():
     global data
     data = getData()
     global user
-    user = getUser()
+    user = getUsers()
     #print("============")
     #print(data)
     #print("============")
