@@ -17,9 +17,7 @@ APP.register_blueprint(register)
 APP.register_blueprint(login)
 APP.register_blueprint(logout)
 
-@APP.route('/auth/register', methods=['POST'])
-def echo4():
-    pass
+
 
 @APP.route('/auth/register', methods=['POST'])
 def echo4():

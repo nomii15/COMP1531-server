@@ -11,10 +11,10 @@ channel = 0
 
 global data
 data = {
-    'users': {} 
-    'channels' : {}
-    'channel_details' : {}
-    'messages' : {}
+    'users': {},
+    'channels' : {},
+    'channel_details' : {},
+    'messages': {},
     'reacts': {}
 }
 
