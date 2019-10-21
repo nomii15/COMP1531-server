@@ -48,5 +48,5 @@ def message_send():
     data['messages'].append(new_message)
     return {message_id}
 
-    if __name__ == '__main__':
-        APP.run(port=20000)
+if __name__ == '__main__':
+    APP.run(port=20000)
