@@ -6,8 +6,18 @@ Value Errors-
     2. message_id corresponds to a user who is not an owner
     2. message_id corresponds to a user who is not an admin
 '''
+from flask import Flask, request, Blueprint
+from json import dumps
+from data import *
+from channels_list import channels_list
+from channel_messages import channel_messages
 
-def message_edit(token,message_id, message):
+@APP.route('message/edit', methods = ['POST'])
+def message_edit():
+
+    message = request.form.get('message')
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
 
     #all channels user is apart of
     all_channels = channels_list(token)
@@ -29,7 +39,7 @@ def message_edit(token,message_id, message):
             #extract just the messages dictionary without the start/end index
             varirable_all_messages = variable_all_messages_dict.get("messages")
             #find the target message you want to edit in
-            target_message = next(item for item in variable_all_messages if item["message_id"] == message_id, '-1')
+            target_message = next((item) for item in variable_all_messages if item["message_id"] == message_id, '-1')
             #if could not find target message continue to next iter in loop
             if target_message == '-1':
                 continue
@@ -41,6 +51,9 @@ def message_edit(token,message_id, message):
             if user_id != uid_3 and is_owner == False:
                 raise ValueError("Not an authorised user")
             #if no errors, overwrite old message with new one (IMPLEMENTATION)
-            target_message = message
+            target_message['message'] = message
 
     return {}
+
+if __name__ == '__main__':
+    APP.run(port=20000)
