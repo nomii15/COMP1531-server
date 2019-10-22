@@ -2,6 +2,7 @@
 from email_check import email_check
 from flask import Flask, request, Blueprint
 from json import dumps
+import string
 import jwt
 import hashlib
 
@@ -65,16 +66,19 @@ def auth_register():
     user = getUsers()
 
 
-    #u_id = name_first.lower() + name_last.lower()
-    #u_id = ''.join(u_id)
+    handle = name_first.lower() + name_last.lower()
+    handle = ''.join(handle)
+
+    # if the u_id is greater than 20 character, reduce
+    if len(handle)>17:
+        handle = handle[0:17]
+
+    handle = handle + str(user)   
+
     u_id = user
 
-     # if the u_id is greater than 20 character, reduce
-   # if len(u_id)>20:
-   #     u_id = u_id[0:19]
-
     data['users'][user] = {'email': email, 'password': hashlib.sha256(password.encode()), 'name_first': name_first,
-     'name_last': name_last, 'u_id': u_id, 'loggedin': True}
+     'name_last': name_last, 'u_id': u_id, 'loggedin': True, 'handle': handle}
     incUser()
 
     #think about implementing a variable for u_id within data

@@ -23,7 +23,6 @@ reset = {
     'codes': {}
 }
 
-
 def getData():
     global data
     return data
