@@ -13,7 +13,11 @@ ValueError when:
 '''
 # maybe need to change route - double check later
 @APP.route('channels/create', methods['POST'])
-def channels_create(token, name, is_public):
+def channels_create():
+    token = request.form.get('token')
+    name = request.form.get('name')
+    is_public = request.form.get('is_public')
+    
     # channel name length check
     if len(name) > 20:
         raise ValueError("Channel name too long")
