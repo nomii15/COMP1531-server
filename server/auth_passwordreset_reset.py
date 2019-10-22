@@ -1,7 +1,12 @@
 #definition of the auth_passwordreset_reset function
-import auth_register 
-import auth_passwordreset_request
-import auth_register
+from flask import Flask, request
+from flask_mail import Mail, Message
+from json import dumps
+from email_check import email_check
+import random
+import string
+import hashlib
+from data import *
 '''
 Given a reset code for a user, set that user's new password to the password provided
 
