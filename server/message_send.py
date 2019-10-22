@@ -45,7 +45,11 @@ def message_send():
         'reacts': reacts,
         'is_pinned': is_pinned
     }
-    data['messages'].append(new_message)
+    for d in data['channels']:
+        if d['channel_id'] == channel_id:
+            d['messages'].append(new_message)
+            break
+
     return {message_id}
 
 if __name__ == '__main__':
