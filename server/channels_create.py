@@ -44,6 +44,9 @@ def channels_create():
     SECRET = getSecret()
 
     token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    data['channel_details'][channel] = {'name' : name, 'owner_members' : [token_payload['u_id']], 'all_members' : [token_payload['u_id']]}
+    u_id = token_payload['u_id']
+    data['channel_details'][channel] = {'name' : name, 'owner_members' : u_id, 'all_members' : u_id}
+
+    incChannel()
 
     return channel_id
