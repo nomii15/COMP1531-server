@@ -29,4 +29,12 @@ def channels_create(token, name, is_public):
 
     data['channels'][channel] = {'channel_id': channel_id, 'name': name}
 
+    # also need to add to channel details 
+    # retrieve u_id from token
+    global SECRET 
+    SECRET = getSecret()
+
+    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    data['channel_details'][channel] = {'name' : name, 'owner_members' : [token_payload['u_id']], 'all_members' : [token_payload['u_id']]}
+
     return channel_id
