@@ -21,6 +21,9 @@ def message_pin():
     message_id = request.form.get('message_id')
     token = request.form.get('token')
 
+    global data
+    data = getData()
+    
     #all channels user is apart of
     all_channels = channels_list(token)
     #number of channels user is apart of
