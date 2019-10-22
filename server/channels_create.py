@@ -4,6 +4,7 @@ import jwt
 
 # importing the data file
 from data import *
+from token_check import *
 
 '''
 Creates a new channel with that name that is either a public or private channel
@@ -18,6 +19,9 @@ def channels_create():
     token = request.form.get('token')
     name = request.form.get('name')
     is_public = request.form.get('is_public')
+
+    if token_check(token) == False:
+        raise Exception('AccessError')
 
     # channel name length check
     if len(name) > 20:
