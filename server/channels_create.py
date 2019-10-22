@@ -1,5 +1,6 @@
 #definition channels_create function
 from flask import Flask, request, Blueprint
+import jwt
 
 # importing the data file
 from data import *
@@ -17,7 +18,7 @@ def channels_create():
     token = request.form.get('token')
     name = request.form.get('name')
     is_public = request.form.get('is_public')
-    
+
     # channel name length check
     if len(name) > 20:
         raise ValueError("Channel name too long")
