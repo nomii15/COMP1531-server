@@ -18,6 +18,11 @@ data = {
     'reacts': {}
 }
 
+global reset
+reset = {
+    'codes': {}
+}
+
 
 def getData():
     global data
@@ -41,4 +46,8 @@ def incUser():
 
 def incChannel():
     global channel
-    channel+=1 
+    channel+=1
+
+def getReset():
+    global reset
+    return reset
