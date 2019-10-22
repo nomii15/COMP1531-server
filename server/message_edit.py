@@ -60,6 +60,7 @@ def message_edit():
                 if d['message_id'] == message_id:
                     d['message'] = message
                     d['time_created'] = currentTime
+                    break
 
     return {}
 

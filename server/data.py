@@ -14,7 +14,6 @@ data = {
     'users': {},
     'channels' : {},
     'channel_details' : {},
-    'messages': {},
     'reacts': {}
 }
 
