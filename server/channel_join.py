@@ -24,10 +24,10 @@ def channel_join(token, channel_id):
 
     if token_check(token) == False:
         raise AccessError('Invalid Token')
-        
+
     global data
     data = getData()
 
     # value error when channel does not exist
-    for channel in data['channels']:
+    for channel in data['channels'].items():
         if data['channels'][channel]['channel_id'] !=
