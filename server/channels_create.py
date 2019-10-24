@@ -1,6 +1,7 @@
 #definition channels_create function
 from flask import Flask, request, Blueprint
 import jwt
+from json import dumps
 
 # importing the data file
 from data import *
@@ -38,15 +39,16 @@ def channels_create():
 
     data['channels'][channel] = {'channel_id': channel_id, 'name': name}
 
-    # also need to add to channel details 
     # retrieve u_id from token
     global SECRET 
     SECRET = getSecret()
 
     token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
-    data['channel_details'][channel] = {'name' : name, 'owner_members' : u_id, 'all_members' : u_id}
 
+    u_id = token_payload['u_id']
+    
+    # adding to channel details, registering as a member of the channel
+    data['channel_details'][channel] = {'name' : name, 'owner_members' : u_id, 'all_members' : u_id}
     incChannel()
 
-    return channel_id
+    return dumps(channel_id)
