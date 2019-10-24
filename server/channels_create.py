@@ -14,8 +14,9 @@ ValueError when:
     Name is more than 20 characters long
 
 '''
-# maybe need to change route - double check later
-@APP.route('channels/create', methods['POST'])
+
+channels_create = Blueprint('APP_create', __name__)
+@channels_create.route('channels/create', methods['POST'])
 def channels_create():
     token = request.form.get('token')
     name = request.form.get('name')

@@ -1,5 +1,6 @@
 #definition channels_list function
 from flask import Flask, request, Blueprint
+from json import dumps
 
 # importing the data file
 from data import *
@@ -9,7 +10,8 @@ from token_check import *
 Provide a list of all channels (and their associated details) that the authorised user is part of
 
 '''
-@APP.route('channels/list', methods['GET'])
+channels_list = Blueprint('APP_create', __name__)
+@channels_list.route('channels/list', methods['GET'])
 def channels_list():
     # search through data['channel_details'][channels]
     # for each channel, check if user is existing as a member
@@ -37,7 +39,8 @@ def channels_list():
     ret = dict()
 
     for channel in channel_list:
-        ret[channel] = data['channel'][channel]
+        del data['channel'][channel]['messages']
+        ret[channel] = data['channel'][channel]#[['name']['channel_id']] <= check how to only return these two fields 
     
-    return ret
+    return dumps(ret)
         
