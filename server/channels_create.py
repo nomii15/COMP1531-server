@@ -2,6 +2,7 @@
 from flask import Flask, request, Blueprint
 import jwt
 from json import dumps
+from Error import AccessError
 
 # importing the data file
 from data import *
@@ -23,7 +24,7 @@ def channels_create():
     is_public = request.form.get('is_public')
 
     if token_check(token) == False:
-        raise Exception('AccessError')
+        raise AccessError('Invalid Token')
 
     # channel name length check
     if len(name) > 20:
