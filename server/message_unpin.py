@@ -8,8 +8,21 @@ Value Errors-
 AccessError-
     1. Authorised user is not a memeber of channel
 '''
+from flask import Flask, request, Blueprint
+from json import dumps
+from data import *
 
+from channels_list import channels_list
+from channel_messages import channel_messages
+
+@APP.route('message/unpin', methods = ['POST'])
 def message_unpin(token,message_id):
+
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+
+    global data
+    data = getData()
 
     #all channels user is apart of
     all_channels = channels_list(token)
@@ -45,12 +58,22 @@ def message_unpin(token,message_id):
                 if target_message.get('u_id') not in variable_channel_owners:
                     raise ValueError("User is not an admin")
                 #elif message is not pinned error/break
-                #else implement the unpin message here - MAKE SURE TO DECREMENT N ONCE, THEN BREAK FROM ALL LOOPS
-                pass
-
+                elif target_message.get('is_pinned') == False:
+                    raise ValueError("Message is not pinned")
+                else:
+                    for d in data['channels']['messages']:
+                        if d['message_id'] == message_id:
+                            d['is_pinned'] == False
+                            n -= 1
+                            break
+            break
+        break
     #if all the channels have been searched, this means no message has been found
     #need to decrement n once in implementation to not accidently call error in the case the message is found in the last channel search
     if n == number_of_channels:
         raise ValueError("Invalid messageId")
 
     return {}
+
+if __name__ == '__main__':
+    APP.run(port=20000)

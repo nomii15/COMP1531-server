@@ -10,8 +10,6 @@ from channels_list import channels_list
 from data import *
 from datetime import datetime
 
-from random import randrange
-
 @APP.route('message/send', methods = ['POST'])
 def message_send():
 
@@ -34,7 +32,7 @@ def message_send():
     currentTime = now.strftime("%H:%M:%S")
     reacts = []
     is_pinned = False
-    message_id = randrange(1000000)
+    message_id = len(data['channels']['messages']) + 1
     #Not sure how to get the u_id. spec says it gets sent from frontend
     u_id = token
     new_message = {
