@@ -8,9 +8,20 @@ Access Errors-
     2. message_id corresponds to a user who is not an owner
     2. message_id corresponds to a user who is not an admin
 '''
+from flask import Flask, request, Blueprint
+from json import dumps
+from data import *
+from channels_list import channels_list
+from channel_messages import channel_messages
 
-def message_remove(token,message_id):
+@APP.route('message/remove', methods = ['DELETE'])
+def message_remove():
     
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+
+    global data
+    data = getData()
     #all channels user is apart of
     all_channels = channels_list(token)
     #number of channels user is apart of
@@ -29,7 +40,7 @@ def message_remove(token,message_id):
         i = 0
         variable_all_messages_dict = {'end': 0}
         #while you havent reached the end of the channel messages
-        while variable_all_messages_dict.get("end") != -1
+        while variable_all_messages_dict.get("end") != -1:
             #extract the first 50 channel messages, start index and end index
             variable_all_messages_dict = channel_messages(token, variable_channel_id, i)
             i += 50
@@ -48,7 +59,10 @@ def message_remove(token,message_id):
             #if satisfy error conditions, raise an error
             if user_id != uid_3 and is_owner == False:
                 raise ValueError("Not an authorised user")
-    
+            for d in data['channels']['messages']:
+                if d['message_id'] == message_id:
+                    del data['channels'][d]
+                    break
     if n == number_of_channels and user_id == -1:
         raise ValueError("Message could not be found")
 

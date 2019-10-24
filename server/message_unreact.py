@@ -30,7 +30,7 @@ def message_unreact(token,message_id, react_id):
         i = 0
         variable_all_messages_dict = {'end': 0}
         #while you havent reached the end of the channel messages
-        while variable_all_messages_dict.get("end") != -1
+        while variable_all_messages_dict.get("end") != -1:
             #extract the first 50 channel messages, start index and end index
             variable_all_messages_dict = channel_messages(token, variable_channel_id, i)
             i += 50
