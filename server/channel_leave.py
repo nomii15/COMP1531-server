@@ -1,5 +1,7 @@
 #definition channel_leave function
 from flask import Flask, request, Blueprint
+from json import dumps
+from Error import AccessError
 
 # importing the data file
 from data import *
@@ -16,4 +18,6 @@ ValueError when:
 channel_leave = Blueprint('APP_leave', __name__)
 @channel_leave.route('channels/leave', methods['POST'])
 def channel_leave(token, channel_id):
-    pass
+    
+    if token_check(token) == False:
+        raise AccessError('Invalid Token')

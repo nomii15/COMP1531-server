@@ -1,5 +1,7 @@
 #definition channels_listall function
 from flask import Flask, request, Blueprint
+from json import dumps
+from Error import AccessError
 
 # importing the data file
 from data import *
@@ -17,4 +19,15 @@ AccessError when:
 channel_join = Blueprint('APP_listall', __name__)
 @channel_join.route('channels/listall', methods['POST'])
 def channel_join(token, channel_id):
-    pass
+    token = request.form.get('token')
+    name = request.form.get('channel_id')
+
+    if token_check(token) == False:
+        raise AccessError('Invalid Token')
+        
+    global data
+    data = getData()
+
+    # value error when channel does not exist
+    for channel in data['channels']:
+        if data['channels'][channel]['channel_id'] !=

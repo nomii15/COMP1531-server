@@ -1,6 +1,7 @@
 #definition channels_list function
 from flask import Flask, request, Blueprint
 from json import dumps
+from Error import AccessError
 
 # importing the data file
 from data import *
@@ -17,9 +18,9 @@ def channels_list():
     # for each channel, check if user is existing as a member
     # if a member, add channel id to list
     # return data['channel_details'][list]
-    token = request.form.get('token')
+    token = request.args.get('token')
     if token_check(token) == False:
-        raise Exception('AccessError')
+        raise AccessError('Invalid Token')
     
     #add channel dictionary to add to global dictionary
     global data

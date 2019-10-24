@@ -1,5 +1,7 @@
 #definition channels_listall function
 from flask import Flask, request, Blueprint
+from json import dumps
+from Error import AccessError
 
 # importing the data file
 from data import *
@@ -13,9 +15,9 @@ Provide a list of all channels (and their associated details)
 channels_listall = Blueprint('APP_listall', __name__)
 @channels_listall.route('channels/listall', methods['GET'])
 def channels_listall():
-    token = request.form.get('token')
+    token = request.args.get('token')
     if token_check(token) == False:
-        raise Exception('AccessError')
+        raise AccessError('Invalid Token')
     #add channel dictionary to add to global dictionary
     global data
     data = getData()
