@@ -6,12 +6,36 @@ Value Errors-
     2. react_id is not valid
     2. message already is reacted to
 '''
-#NOT SURE HOW TO CHECK WHETHER A MESSAGE CURRENTLY HAS AN ACTIVE REACT OR NOT
-def message_react(token,message_id, react_id):
-    #assuming -1 id is an invalid id
-    if react_id == -1:
+
+from flask import Flask, request, Blueprint
+from json import dumps
+from data import *
+from Error import AccessError
+from token_check import token_check
+
+from channels_list import channels_list
+from channel_messages import channel_messages
+
+react = Blueprint('APP_react', __name__)
+@react.route('message/react', methods = ['POST'])
+def message_react():
+    
+    token = request.form.get('token')
+    if token_check(token) == False:
+        raise AccessError('Invalid Token')
+
+    global data
+    data = getData()
+
+    react_id = request.form.get('react_id')
+    if not any(d['react_id'] == react_id for d in data['reacts']):
         raise ValueError('Invalid react id')
 
+    for d in data['reacts']:
+        if d['react_id'] == react_id and d['is_this_user_reacted'] == True:
+            raise ValueError('Already reacted')
+
+    message_id = request.form.get('message_id')
     #all channels user is apart of
     all_channels = channels_list(token)
     #number of channels user is apart of
@@ -29,7 +53,7 @@ def message_react(token,message_id, react_id):
         #initialise channel messages and a variable i
         i = 0
         variable_all_messages_dict = {'end': 0}
-        #while you havent reached the end of the channel messages
+        #while you havent reached the end of the channel messages\
         while variable_all_messages_dict.get("end") != -1:
             #extract the first 50 channel messages, start index and end index
             variable_all_messages_dict = channel_messages(token, variable_channel_id, i)
@@ -42,8 +66,18 @@ def message_react(token,message_id, react_id):
             if target_message == '-1':
                 continue
             else:
-                pass
-                #implement the react to message here - MAKE SURE TO DECREMENT N ONCE, THEN BREAK FROM ALL LOOPS
+                for d in data['channels']['messages']:
+                    if d['message_id'] == message_id:
+                        d['reacts'].append(react_id)
+                        n -= 1
+                for d in data['reacts']:
+                    if d['react_id'] == react_id:
+                        d['u_ids'].append(token) #have to append u_id
+                        d['is_this_user_reacted'] = True
+                
+                n -= 1
+                break
+
 
     #if all the channels have been searched, this means no message has been found
     #need to decrement n once in implementation to not accidently call error in the case the message is found in the last channel search

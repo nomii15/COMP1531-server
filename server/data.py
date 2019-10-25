@@ -14,7 +14,7 @@ data = {
     'users': {},
     'channels' : {},
     'channel_details' : {},
-    'reacts': {}
+    'reacts': []
 }
 
 global reset
