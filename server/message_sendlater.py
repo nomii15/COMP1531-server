@@ -18,7 +18,8 @@ from datetime import datetime
 from channels_list import channels_list
 from message_send import message_send
 
-@APP.route('message/sendlater', methods = ['POST'])
+sendlater = Blueprint('APP_sendlater', __name__)
+@sendlater.route('message/sendlater', methods = ['POST'])
 def message_sendlater(token, channel_id, message, time_sent):
     token = request.form.get('token')
     channel_id = request.form.get('channel_id')
@@ -47,6 +48,3 @@ def message_sendlater(token, channel_id, message, time_sent):
     message_id = message_send(token, channel_id, message)
 
     return {message_id}
-
-if __name__ == '__main__':
-    APP.run(port=20000)

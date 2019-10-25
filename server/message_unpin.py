@@ -15,7 +15,8 @@ from data import *
 from channels_list import channels_list
 from channel_messages import channel_messages
 
-@APP.route('message/unpin', methods = ['POST'])
+unpin = Blueprint('APP_unpin', __name__)
+@unpin.route('message/unpin', methods = ['POST'])
 def message_unpin(token,message_id):
 
     message_id = request.form.get('message_id')
@@ -74,6 +75,3 @@ def message_unpin(token,message_id):
         raise ValueError("Invalid messageId")
 
     return {}
-
-if __name__ == '__main__':
-    APP.run(port=20000)

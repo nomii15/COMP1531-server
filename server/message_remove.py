@@ -14,7 +14,8 @@ from data import *
 from channels_list import channels_list
 from channel_messages import channel_messages
 
-@APP.route('message/remove', methods = ['DELETE'])
+remove = Blueprint('APP_remove', __name__)
+@remove.route('message/remove', methods = ['DELETE'])
 def message_remove():
     
     message_id = request.form.get('message_id')

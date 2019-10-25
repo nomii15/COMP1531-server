@@ -13,7 +13,8 @@ from channels_list import channels_list
 from channel_messages import channel_messages
 from datetime import datetime
 
-@APP.route('message/edit', methods = ['POST'])
+edit = Blueprint('APP_edit', __name__)
+@edit.route('message/edit', methods = ['POST'])
 def message_edit():
 
     message = request.form.get('message')
@@ -63,6 +64,3 @@ def message_edit():
                     break
 
     return {}
-
-if __name__ == '__main__':
-    APP.run(port=20000)

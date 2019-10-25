@@ -15,7 +15,8 @@ from data import *
 from channels_list import channels_list
 from channel_messages import channel_messages
 
-@APP.route('message/pin', methods = ['POST'])
+pin = Blueprint('APP_pin', __name__)
+@pin.route('message/pin', methods = ['POST'])
 def message_pin():
 
     message_id = request.form.get('message_id')
@@ -75,6 +76,3 @@ def message_pin():
         raise ValueError("Invalid messageId")
 
     return {}
-
-if __name__ == '__main__':
-    APP.run(port=20000)

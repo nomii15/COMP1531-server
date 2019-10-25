@@ -10,7 +10,8 @@ from channels_list import channels_list
 from data import *
 from datetime import datetime
 
-@APP.route('message/send', methods = ['POST'])
+send = Blueprint('APP_send', __name__)
+@send.route('message/send', methods = ['POST'])
 def message_send():
 
     message = request.form.get('message')
@@ -50,5 +51,3 @@ def message_send():
 
     return {message_id}
 
-if __name__ == '__main__':
-    APP.run(port=20000)
