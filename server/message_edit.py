@@ -12,6 +12,8 @@ from data import *
 from channels_list import channels_list
 from channel_messages import channel_messages
 from datetime import datetime
+from Error import AccessError
+from token_check import token_check
 
 edit = Blueprint('APP_edit', __name__)
 @edit.route('message/edit', methods = ['POST'])
@@ -21,6 +23,9 @@ def message_edit():
     message_id = request.form.get('message_id')
     token = request.form.get('token')
 
+    if token_check(token) == False:
+        raise AccessError('Invalid Token')
+    
     global data
     data = getData()
     #all channels user is apart of

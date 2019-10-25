@@ -9,6 +9,8 @@ from json import dumps
 from channels_list import channels_list
 from data import *
 from datetime import datetime
+from Error import AccessError
+from token_check import token_check
 
 send = Blueprint('APP_send', __name__)
 @send.route('message/send', methods = ['POST'])
@@ -22,6 +24,11 @@ def message_send():
     data = getData()
 
     token = request.form.get('token')
+
+    if token_check(token) == False:
+        raise AccessError('Invalid Token')
+    
+    
     channel_id = request.form.get('channel_id')
     channels_list =  channels_list(token)
     #search list of dictionaries to see if channel id you want to send a message to is in the list of authorised channels

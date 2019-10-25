@@ -12,6 +12,8 @@ Access Errors-
 from flask import Flask, request, Blueprint
 from json import dumps
 from data import *
+from Error import AccessError
+from token_check import token_check
 
 from datetime import datetime
 
@@ -20,12 +22,15 @@ from message_send import message_send
 
 sendlater = Blueprint('APP_sendlater', __name__)
 @sendlater.route('message/sendlater', methods = ['POST'])
-def message_sendlater(token, channel_id, message, time_sent):
+def message_sendlater():
     token = request.form.get('token')
     channel_id = request.form.get('channel_id')
     message = request.form.get('message')
     time_sent = request.form.get('time_sent')
 
+    if token_check(token) == False:
+        raise AccessError('Invalid Token')
+    
     subscribedChannels = channels_list(token)
     if channel_id not in subscribedChannels:
         raise ValueError("Invalid Channel ID")

@@ -11,6 +11,8 @@ AccessError-
 from flask import Flask, request, Blueprint
 from json import dumps
 from data import *
+from Error import AccessError
+from token_check import token_check
 
 from channels_list import channels_list
 from channel_messages import channel_messages
@@ -22,6 +24,9 @@ def message_pin():
     message_id = request.form.get('message_id')
     token = request.form.get('token')
 
+    if token_check(token) == False:
+        raise AccessError('Invalid Token')
+    
     global data
     data = getData()
     
