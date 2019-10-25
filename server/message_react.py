@@ -69,7 +69,6 @@ def message_react():
                 for d in data['channels']['messages']:
                     if d['message_id'] == message_id:
                         d['reacts'].append(react_id)
-                        n -= 1
                 for d in data['reacts']:
                     if d['react_id'] == react_id:
                         d['u_ids'].append(token) #have to append u_id
@@ -77,6 +76,7 @@ def message_react():
                 
                 n -= 1
                 break
+            break
 
 
     #if all the channels have been searched, this means no message has been found
