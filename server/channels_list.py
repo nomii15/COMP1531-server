@@ -35,11 +35,12 @@ def channels_list():
     #for each channel, check if user is a member
     for i,channel in data['channel_details'].items():
         #print(channel)
-        if u_id in channel['all_members']:
-            channelret.append({'name': channel['name'], 'channel_id': i})
+        for j in channel['all_members']:
+            if j['u_id'] == u_id:
+                channelret.append({'channel_id': i, 'name': channel['name']})
 
     ret = {'channels': channelret} 
-    #print(ret)       
+    print(ret)       
     '''
     ret = dict()
     for channel in channel_list:
