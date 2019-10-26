@@ -73,7 +73,12 @@ def auth_register():
     if len(handle)>17:
         handle = handle[0:17]
 
-    handle = handle + str(user)   
+    # also add number to reduce handle conflicts
+    handle = handle + str(user)
+    handle = ''.join(handle)
+
+    if len(handle) > 20:
+        handle = handle[0:19]
 
     u_id = user
 

@@ -10,8 +10,7 @@ def uid_check(u_id):
 
     for key, item in data['users'].items():
         if item['u_id'] == u_id:
-            if item['loggin'] == True:
-                return True
+            return True
 
     return False            
     
