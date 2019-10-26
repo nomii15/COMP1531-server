@@ -38,6 +38,7 @@ def channels_listall():
 
     for channel in data['channel'].items():
         del data['channel'][channel]['messages']
+        del data['channel'][channel]['is_public']
         ret[channel] = data['channel'][channel]#[['name']['channel_id']] <= check how to only return these two fields 
     '''
     return dumps(ret)

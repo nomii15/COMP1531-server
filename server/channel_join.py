@@ -6,6 +6,7 @@ from Error import AccessError
 # importing the data file
 from data import *
 from token_check import *
+from channel_check import id_check
 
 '''
 Given a channel_id of a channel that the authorised user can join, adds them to that channel
@@ -18,9 +19,9 @@ AccessError when:
 
 channel_join = Blueprint('APP_listall', __name__)
 @channel_join.route('channels/listall', methods['POST'])
-def channel_join(token, channel_id):
+def channel_join():
     token = request.form.get('token')
-    name = request.form.get('channel_id')
+    channel_id = request.form.get('channel_id')
 
     if token_check(token) == False:
         raise AccessError('Invalid Token')
@@ -28,6 +29,20 @@ def channel_join(token, channel_id):
     global data
     data = getData()
 
+    global SECRET
+    SECRET = getSecret()
+    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    u_id = token_payload['u_id']
+
+
     # value error when channel does not exist
-    for channel in data['channels'].items():
-        if data['channels'][channel]['channel_id'] !=
+    if id_check(channel_id) == False:
+        raise ValueError('Channel does not exist')
+
+    # access error when channel is private
+    if data['channel'][channel]['is_public'] == False:
+        if u_id not in data['channel_details'][channel_id]['owner_members']:
+            raise AccessError('Access denied')
+
+    # adding to members
+    data['channel_details'][channel_id]['all_members'].append(u_id)
