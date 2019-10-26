@@ -18,16 +18,18 @@ def channel_invite():
     invitee = request.form.get('u_id')
 
     
-    
-    
+    #exceptions
     if member_check(token, channel_id) == False:
         raise AccessError("inviter is not a member of the given channel.")
         
+
     if id_check(int(channel_id)):
         raise ValueError("channel_id does not refer to a valid channel that the authorised user is part of.")
+
         
     if uid_check(int(u_id)) == False:
         raise ValueError("invalid u_id.")
+
 
     # value error when channel does not exist
     for i, channel in data['channels'].items():
@@ -45,6 +47,7 @@ def channel_invite():
             # if get to end of this loop, user isnt valid
 
     # if here channel doesnt exist                
+
 
 
 
