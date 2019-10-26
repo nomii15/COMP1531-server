@@ -26,7 +26,7 @@ def channels_listall():
 
     #for each channel, return
     for i,channel in data['channel_details'].items():
-        #print(channel)
+       # print(channel)
         # if u_id in channel['all_members']:
         channelret.append({'name': channel['name'], 'channel_id': i})
 

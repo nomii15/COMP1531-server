@@ -8,7 +8,8 @@ def member_check(token, channel_id):
     data = getData()
     global SECRET    
     SECRET = getSecret()
-    Payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+
+    Payload = jwt.decode(token, SECRET, algorithms='HS256')
     u_id = Payload['u_id']
 
     for i,items in data['channel_details'].items():
@@ -21,8 +22,8 @@ def id_check(channel_id):
     global data    
     data = getData()
 
-    for channel in data['channels']:
-        if channel['channel_id'] == channel_id:
-            return True
+    for i,Channel in data['channels'].items():
+        if channel_id == Channel['channel_id']:
+                return True
         
     return False
