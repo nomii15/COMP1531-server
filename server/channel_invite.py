@@ -13,15 +13,15 @@ def channel_invite():
     channel_id = int(request.form.get('channel_id'))
     invitee = request.form.get('u_id')
     
-    
-    
+    #exceptions
     if member_check(token, channel_id) == False:
         raise AccessError("inviter is not a member of the given channel.")
         
-    if ...:
-        raise ValueError("channel_id does not refer to a valid channel that the authorised user is part of.")
+    if id_check(channel_id) == False:
+        raise ValueError("invalid channel ID.")
         
     if uid_check(invitee) == False:
         raise ValueError("invalid u_id.")
-        
-    data['channel_details']['channel_id']['all_members'].append(invitee)
+
+    #the invitee is added to the channel        
+    data['channel_details'][channel_id]['all_members'].append(invitee)
