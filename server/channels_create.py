@@ -39,7 +39,7 @@ def channels_create():
 
     channel_id = channel
 
-    data['channels'][channel] = {'channel_id': channel_id, 'name': name}
+    data['channels'][channel] = {'channel_id': channel_id, 'name': name, 'is_public': is_public}
 
     # retrieve u_id from token
     global SECRET 
@@ -50,7 +50,7 @@ def channels_create():
     u_id = token_payload['u_id']
     
     # adding to channel details, registering as a member of the channel
-    data['channel_details'][channel] = {'name' : name, 'owner_members' : u_id, 'all_members' : u_id}
+    data['channel_details'][channel] = {'name' : name, 'owner_members' : [u_id], 'all_members' : [u_id]}
     incChannel()
 
     return dumps(channel_id)

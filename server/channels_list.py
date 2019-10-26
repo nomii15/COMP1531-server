@@ -41,6 +41,7 @@ def channels_list():
 
     for channel in channel_list:
         del data['channel'][channel]['messages']
+        del data['channel'][channel]['is_public']        
         ret[channel] = data['channel'][channel]#[['name']['channel_id']] <= check how to only return these two fields 
     
     return dumps(ret)
