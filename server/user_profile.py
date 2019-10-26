@@ -24,6 +24,7 @@ def user_profile():
             handle = item['handle']
             break
     
+        
     return dumps({
         'email' : email
         'first_name' : first_name
