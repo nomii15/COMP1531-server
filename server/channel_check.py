@@ -17,7 +17,7 @@ def member_check(token, channel_id):
 #check whether the given channel is valid
 def id_check(channel_id):
     for channel in data['channels']:
-        if channel['channel_id'] == channel_id
-        return True
+        if channel['channel_id'] == channel_id:
+            return True
         
     return False
