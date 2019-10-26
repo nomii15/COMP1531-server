@@ -1,27 +1,41 @@
 #implementation of search function
 from json import dumps
-from flask import Flask,request
+from flask import Flask,request, Blueprint
 import jwt
 
-APP = Flask(__name__)
+from token_check import token_check
+from data import *
+
+search = Blueprint('search', __name__)
 
 
-@APP.route('/search', methods=['GET'])
+@search.route('/search', methods=['GET'])
 def search():
-    messages = {}
+    ret = {'messages': []}
 
     token = request.args.get('token')
     query_str = request.args.get('query_str')
 
-    # get the dictionary to compare members of channel with user
+    if token_check(token) == False:
+        raise ValueError("Invalid token")
 
-    # compare channels which the user is in
+    global SECRET
+    SECRET = getSecret()
+    Payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    u_id = Payload['u_id'] 
 
-        # look through the messages and compare with the query str
+    global data
+    data = getData()
 
-        # if match, add to a dictionary
+    # for all channels, if the user is part of that channels
+    # get the messages that 
+    for i, items in data['channel_details'].items():
+        for j in items['all_members']:
+            if j == u_id:
+                # the user is part of that channel
+                # see if query exists
+                if query_str in items['messages']:
+                    ret['messages'].append(items['messages'])
 
-
-    #return the dictionary of items associated with query string 
-    return dumps(messages)  
+    return dumps(ret)            
 
