@@ -1,19 +1,24 @@
 from flask import Flask, request, Blueprint
 from json import dumps
-import jwt
 from data import *
 from uid_check import *
 from channel_check import *
 
+
 invite = Blueprint('invite',__name__)
+
 
 @invite.route('/channel/invite', methods=['POST'])
 def channel_invite():
     global data
     data = getData()
     token = request.form.get('token')
-    channel_id = request.form.get('channel_id')
-    u_id = request.form.get('u_id')
+
+    channel_id = int(request.form.get('channel_id'))
+    invitee = request.form.get('u_id')
+
+    
+    
     
     if member_check(token, channel_id) == False:
         raise AccessError("inviter is not a member of the given channel.")

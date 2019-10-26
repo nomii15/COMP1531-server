@@ -7,8 +7,10 @@ import jwt
 # importing the data file
 from data import *
 from token_check import *
+
 from uid_check import *
 from channel_check import *
+
 
 
 '''
@@ -20,8 +22,10 @@ AccessError when:
     channel_id refers to a channel that is private (when the authorised user is not an admin)
 '''
 
+
 join = Blueprint('join', __name__)
 @join.route('/channel/join', methods=['POST'])
+
 def channel_join():
     token = request.form.get('token')
     channel_id = request.form.get('channel_id')
@@ -44,7 +48,14 @@ def channel_join():
     global data
     data = getData()
 
+    global SECRET
+    SECRET = getSecret()
+    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    u_id = token_payload['u_id']
+
+
     # value error when channel does not exist
+
     for i, channel in data['channels'].items():
         print(channel)
         if channel['channel_id'] == int(channel_id):
@@ -61,3 +72,4 @@ def channel_join():
             # if get to end of this loop, user isnt valid
 
     # if here channel doesnt exist                
+

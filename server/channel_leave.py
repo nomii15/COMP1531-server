@@ -6,6 +6,7 @@ from Error import AccessError
 # importing the data file
 from data import *
 from token_check import *
+from channel_check import id_check
 
 '''
 Given a channel ID, the user removed as a member of this channel.
@@ -14,6 +15,7 @@ ValueError when:
         Channel (based on ID) does not exist.
 
 '''
+
 
 leave = Blueprint('leave', __name__)
 @leave.route('/channel/leave', methods=['POST'])
@@ -54,3 +56,4 @@ def channel_leave():
             # if get to end of this loop, user isnt valid
     raise AccessError("not in channel")    
     # if here channel doesnt exist 
+

@@ -36,6 +36,7 @@ def channel_details():
             if item['u_id'] == temp['u_id']:
                 ret['owner_members'].append(  {'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'] })
 
+
         for hold in data['channel_details'][channel_id]['all_members']:
             temp
             if item['u_id'] == hold['u_id']:
@@ -43,3 +44,4 @@ def channel_details():
   
     #print(ret)
     return dumps(ret)              
+
