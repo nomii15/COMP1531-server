@@ -39,4 +39,3 @@ def channel_details():
                 ret['all_members'].append(  {'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'] })  
     print(ret)
     return dumps(ret)
-
