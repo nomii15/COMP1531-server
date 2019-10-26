@@ -30,12 +30,20 @@ def channel_details():
     
     # get the names of the members
     for i, item in data['users'].items():
-        if item['u_id'] in data['channel_details'][channel_id]['all_members']:
-            if item['u_id'] in data['channel_details'][channel_id]['owner_members']:
-                # add to owners
+        #print(item)
+        for temp in data['channel_details'][channel_id]['all_members']:
+            #print(temp)
+            if item['u_id'] == temp['u_id']:
                 ret['owner_members'].append(  {'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'] })
-            else:
-                # add to all
-                ret['all_members'].append(  {'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'] })  
-    print(ret)
-    return dumps(ret)
+
+
+
+        for hold in data['channel_details'][channel_id]['all_members']:
+            temp
+            if item['u_id'] == hold['u_id']:
+                ret['all_members'].append(  {'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'] })
+  
+    #print(ret)
+    return dumps(ret)              
+
+
