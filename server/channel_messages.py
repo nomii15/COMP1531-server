@@ -15,8 +15,9 @@ channel_message = Blueprint('channel_message', __name__)
 def getMessages():
 
     token = request.args.get('token')
-    channel_id = request.args.get('channel_id')
-    start = request.args.get('start')
+    channel_id = int(request.args.get('channel_id'))
+    start = int(request.args.get('start'))
+
 
     global data
     data = getData()
@@ -34,13 +35,17 @@ def getMessages():
         'end': 0, 
     }
 
-    for channel in data['channels']['channel_id']:
-        if channel == channel_id:
+    for i,channel in data['channels'].items():
+        #print(channel['channel_id'])
+        #print(channel_id)
+        if channel_id == channel['channel_id']:
             # get the messages
             # add to message return
+            if len(data['channels'][channel_id]['messages']) == 0:
+                return dumps(message)
             
             #check if valid start point to read messages
-            if start >= len(message['messages']):
+            if start >= len( data['channels'][channel_id]['messages'] ):
                 raise ValueError("Start greater than number of messages")
 
             if len(message['messages']) < 50:
@@ -49,11 +54,14 @@ def getMessages():
                 message['end'] = start+50
 
             for i in range(start, end):
-                message['messages'].append(data['channels']['messages'][i].items() )            
+                message['messages'].append(data['channels'][channel_id]['messages'][i] )  
+
+            #print(message)              
             return dumps(message)
 
         else:
-            pass    
+            pass
+
 
     # no match for a channel
     raise ValueError("No channel matches the channel id given")
