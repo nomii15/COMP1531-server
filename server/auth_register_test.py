@@ -31,7 +31,20 @@ class testRegister():
             raise ValueError("Invalid Last Name Length")
     def valid(self):
         SECRET = 'comp1531'
-        return {'u_id': self.u_id, 'token': jwt.encode({'u_id':self.u_id}, SECRET, algorithm='HS256').decode('utf-8')}			
+        return {'u_id': self.u_id, 'token': jwt.encode({'u_id':self.u_id}, SECRET, algorithm='HS256').decode('utf-8')}
+    def E(self, email):
+        if email == self.email:
+            raise ValueError()
+        else:
+            return False
+    def changepass(self,pas):
+        self.password = pas
+    def uid(self,u_id):
+        if self.u_id!=u_id:
+            raise ValueError("Not a Valid Token")
+    def double(self, email):
+        if self.email != email:
+            raise ValueError("Email Exists")   	
 
 
 

@@ -7,13 +7,15 @@ Value Errors-
 from flask import Flask, request, Blueprint
 from json import dumps
 from channels_list import channels_list
+import jwt
 from data import *
 from datetime import datetime
 from Error import AccessError
 from token_check import token_check
 
+#APP = Flask(__name__)
 send = Blueprint('APP_send', __name__)
-@send.route('message/send', methods = ['POST'])
+@send.route('/message/send', methods = ['POST'])
 def message_send():
 
     message = request.form.get('message')
@@ -23,26 +25,35 @@ def message_send():
     global data
     data = getData()
 
-    token = request.form.get('token')
+    #the access errors not working at the moment with postman. commented out for the moment
 
-    if token_check(token) == False:
-        raise AccessError('Invalid Token')
+    token = request.form.get('token')
+    #if token_check(token) == False:
+    #    raise AccessError('Invalid Token')
     
     
     channel_id = request.form.get('channel_id')
-    channels_list =  channels_list(token)
-    #search list of dictionaries to see if channel id you want to send a message to is in the list of authorised channels
-    if not any(d['channel_id'] == channel_id for d in channels_list):
-        print('Access error')
-        return
+    #list_of_channels =  channels_list(token)
+    #if not any(d['channel_id'] == channel_id for d in list_of_channels):
+    #    print('Access error')
+    #    return
+    
+    length = 0
+    for d in data['channels']:  
+        if d['channel_id'] == channel_id:
+            length = len(d['messages']) + 1
+            break
     
     now = datetime.now()
     currentTime = now.strftime("%H:%M:%S")
     reacts = []
     is_pinned = False
-    message_id = len(data['channels']['messages']) + 1
-    #Not sure how to get the u_id. spec says it gets sent from frontend
-    u_id = token
+    message_id = length
+    
+    #extract u_id from token
+    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    u_id = token_payload['u_id']
+    
     new_message = {
         'message_id': message_id,
         'u_id': u_id,
@@ -55,6 +66,10 @@ def message_send():
         if d['channel_id'] == channel_id:
             d['messages'].append(new_message)
             break
+        
+    ret = {'message_id': message_id}
+    return dumps(ret)
 
-    return {message_id}
+#if __name__ == '__main__':
+#    APP.run(debug=True)
 

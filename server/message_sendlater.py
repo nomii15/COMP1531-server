@@ -52,4 +52,4 @@ def message_sendlater():
 
     message_id = message_send(token, channel_id, message)
 
-    return {message_id}
+    return dumps(message_id)
