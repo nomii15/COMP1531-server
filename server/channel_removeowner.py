@@ -9,6 +9,7 @@ AccessError when:
     The authorised user is not an owner of the slackr, or an owner of this channel
 
 '''
+
 from email_check import email_check
 from flask import Flask, request, Blueprint
 from json import dumps

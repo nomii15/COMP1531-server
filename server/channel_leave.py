@@ -16,27 +16,44 @@ ValueError when:
 
 '''
 
-channel_leave = Blueprint('APP_leave', __name__)
-@channel_leave.route('channels/leave', methods['POST'])
+
+leave = Blueprint('leave', __name__)
+@leave.route('/channel/leave', methods=['POST'])
 def channel_leave():
     token = request.form.get('token')
-    channel_id = request.form.get('channel_id')
-
+    channel_id = int(request.form.get('channel_id'))    
+   
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        raise AccessError('Invalid Token')   
+
+
+    global SECRET    
+    SECRET = getSecret()
+    Payload = jwt.decode(token, SECRET, algorithms='HS256')
+    u_id = Payload['u_id']    
 
     global data
     data = getData()
 
-    global SECRET
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
-
-
     # value error when channel does not exist
-    if id_check(channel_id) == False:
-        raise ValueError('Channel does not exist')
+    for i, channel in data['channels'].items():
+        print(channel)
+        if channel['channel_id'] == channel_id:
+            # get dictionary of users details
+            for j, items in data['users'].items():
+                if u_id == items['u_id']:
+                    
+                    ret = {}
+                    ret['u_id'] = items['u_id']
+                    ret['name_first'] = items['name_first']
+                    ret['name_last'] = items['name_last']
 
-    # removing from members
-    data['channel_details'][channel_id]['all_members'].remove(u_id)
+                    data['channel_details'][channel_id]['all_members'].remove(ret)
+                    data['channel_details'][channel_id]['owner_members'].remove(ret)
+                    print(data['channel_details'][channel_id]['all_members'])
+                    print(data['channel_details'][channel_id]['owner_members'])
+                    return dumps({})
+            # if get to end of this loop, user isnt valid
+    raise AccessError("not in channel")    
+    # if here channel doesnt exist 
+
