@@ -41,8 +41,11 @@ def message_send():
     reacts = []
     is_pinned = False
     message_id = len(data['channels']['messages']) + 1
-    #Not sure how to get the u_id. spec says it gets sent from frontend
-    u_id = token
+    
+    #extract u_id from token
+    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    u_id = token_payload['u_id']
+    
     new_message = {
         'message_id': message_id,
         'u_id': u_id,
