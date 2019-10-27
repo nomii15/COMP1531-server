@@ -1,45 +1,54 @@
 import pytest
+import jwt
 
-def test_channel_details_correct():
-    #setup part  
-    authRegDict1 = auth_register("Happy@gmail.com","qwe123","Happy","Man")
-    token1 = authRegDic1['token']
-    Uid1 = authRegDic1['u_id']
-    
-    authRegDict2 = auth_register("Sad@gmail.com","qwe123","Sad","Woman")
-    Uid2 = authRegDic2['u_id']
-    
-    Channelid = channels_create(token1, channel1, True)
-    channel_invite(token1, Channelid, Uid2)    
-    #test part    
-    ChannelDic = channel_details(token1, Channelid)
+SECRET = 'COMP1531'
 
-    assert(ChannelDic['name']) == 'channel1'
-    assert(ChannelDic['owner_members'][0]) == {'u_id': Uid1, 'name_first': 'Happy', 'name_last': 'Man'}
-    assert(ChannelDic['all_members'][0]) == {'u_id': Uid1, 'name_first': 'Happy', 'name_last': 'Man'}
-    assert(ChannelDic['all_members'][1]) == {'u_id': Uid2, 'name_first': 'Sad', 'name_last': 'Woman'}
-    
-def test_channel_details_valueerror():
-    #setup part
-    authRegDict1 = auth_register("Happy@gmail.com","qwe123","Happy","Man")
-    token1 = authRegDic1['token']
-    #test part
-    #channel id does not exist   
-    with pytest.raises(ValueError, match=r"*"):
-        channel_details(token1, 123)
+data = {
+    'channel_details':{
+        '1':{'name': 'channel1', 'all_members': ['001','002']},
+        '2':{'name': 'channel1', 'all_members': ['003','004']}
+    }
+}
+
+class test_detail():
+    def __init__(self, token, channel_id):
+        self.channel_id = channel_id
+        payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+        self.u_id = payload['u_id']
         
-def test_channel_details_accesserroe():
-    #setup part
-    authRegDict1 = auth_register("Happy@gmail.com","qwe123","Happy","Man")
-    token1 = authRegDic1['token']
-    
-    authRegDict2 = auth_register("Sad@gmail.com","qwe123","Sad","Woman")
-    token2 = authRegDic2['token']
-    
-    Channelid = channels_create(token2, channel1, True)
-    #test part
-    #user with token1 is not a member of channel 1
-    with pytest.raises(AccessError, match=r"*"):
-        channel_details(token1, Channelid)
+    def id_check(self):
+        for key, item in data['channel_details'].items():
+            if key == self.channel_id:
+                return True
+        raise ValueError("invalid channel_id")
+        
+    def member_check(self):
+        for member in data['channel_details'][self.channel_id]['all_members']:
+            if member == self.u_id:
+                return True
+        raise AccessError("not a member of the channel")
+        
+    def success(self):
+        return data['channel_details'][self.channel_id]
 
+#return information about channel 1
+def test_1():
+    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
+    test1 = test_detail(token, '1')
+    assert test1.id_check() == True
+    assert test1.member_check() == True
+    assert test1.success() == {'name': 'channel1', 'all_members': ['001', '002']}
 
+#invalid channel_id
+def test_2():
+    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
+    test2 = test_detail(token, '3')
+    with pytest.raises(ValueError, match='*invalid channel_id*'):
+        test2.id_check()
+
+#not a member of the channel
+def test_3():
+    token = jwt.encode({'u_id': '003'}, SECRET, algorithm='HS256')
+    test3 = test_detail(token, '1')
+    with pytest.raises(AccessError, match='*not a member of the channel*'):
+        test2.member_check()
