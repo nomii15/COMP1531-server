@@ -1,49 +1,33 @@
-from flask import Flask, request, Blueprint
 from json import dumps
+from flask import request, Blueprint
 import jwt
 from data import *
 from uid_check import *
 from channel_check import *
 
-details = Blueprint('details',__name__) 
-@details.route('/channel/details', methods=['GET'])
+DETAILS = Blueprint('DETAILS', __name__)
+@DETAILS.route('/channel/details', methods=['GET'])
 def channel_details():
-
     global data
     data = getData()
-
     token = request.args.get('token')
     channel_id = int(request.args.get('channel_id'))
-    
-    if id_check(channel_id) == False:
+    #exceptions
+    if id_check(channel_id) is not True:
         raise ValueError("invalid channel id")
-    #print("get here")  
-    if member_check(token, channel_id) == False:
+    if member_check(token, channel_id) is not True:
         raise AccessError("Authorised user is not a member of this channel.")
-    #print("get here 2")
-
     ret = {
         'name': data['channel_details'][channel_id]['name'],
         'owner_members': [],
         'all_members': []
     }
-    
     # get the names of the members
     for i, item in data['users'].items():
-        #print(item)
         for temp in data['channel_details'][channel_id]['all_members']:
-            #print(temp)
             if item['u_id'] == temp['u_id']:
-                ret['owner_members'].append(  {'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'] })
-
-
-
+                ret['owner_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last']})
         for hold in data['channel_details'][channel_id]['all_members']:
-            temp
             if item['u_id'] == hold['u_id']:
-                ret['all_members'].append(  {'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'] })
-  
-    #print(ret)
-    return dumps(ret)              
-
-
+                ret['all_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last']})
+    return dumps(ret)
