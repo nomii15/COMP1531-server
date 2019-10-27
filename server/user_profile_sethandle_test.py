@@ -1,6 +1,5 @@
 import pytest
 import jwt
-import re
 
 SECRET = 'COMP1531'
 
