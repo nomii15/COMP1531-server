@@ -1,31 +1,33 @@
 From the backend developed over iteation two, the way in which our group attemped
-to validate and verify the functions that make by the backend are through 
-acceptance criteria and through testing of indivdual function with different inputs.
+to validate and verify the functions that make up the backend were through 
+acceptance criteria and testing of indivdual function with different inputs.
 
-Acceptance criteria was used to better help our goup in determining whether a 
-particular function had meet it intended functionality specified by sally and bob.
-For the funtions comprising the backend, the ways in which acceptance criteria were 
+Acceptance criteria was used to better help our group in determining whether a 
+particular function had meet its intended functionality specified by Sally and Bob.
+For the funtions that make up the backend, the ways in which acceptance criteria was 
 generated was through a series of questions, which were
 
-    1. what is the overall success case of ths funtion
-    2. edge cases, where could this function run into any problems
-    3. other interesting cases, the outcome of this functions impact on other functons
+    1. What is the overall success case of ths funtion
+    2. Edge cases, where could this function run into any problems
+    3. Other interesting cases, the outcome of this functions impact on other functons
     
 All of the acceptance criteria generated for the functions are kept within the 
-user stories in the taskboard. this allows our group to keep the focus on the 
-requirements which sally and bob want and not get off track. It also allow the 
-group to effectively plan out what needs to be done and how they are going to be
-done with resect to the acceptance criteria.
+user stories in the taskboard. This allows our group to keep the focus on the 
+requirements which Sally and Bob want and not get off track. It also allow the 
+group to effectively plan out what needs to be done and how the functions are going to be
+implemented with resect to the acceptance criteria.
 
-Another way in which the backend developed in iteration 2 was validated was through
+Another way in which the backend developed in iteration 2 was verified and validated was through
 several test cases. These test cases allow for verifying that the backend developed
-is pratical for what sally and bob wanted. Testing for this iteation was done manually,
-this was due to the difficulties of setting up an automated tests with our groups
-test files. When performing the testing, cases that were considered were
+is pratical for what Sally and Bob wanted. Testing for this iteation was done by manual and 
+automated testing methods; which included running postman with different inputs and seeing the output, and 
+automating it by mimicking the server through classes which comprised of the functions and variables used
+in the individual functions. Due to some of the functions not being fully implemented and others which contain 
+bugs and cannot be properly tested. When performing the testing, cases that were considered were
 
-    1. correct input with resulted in correct output
-    2. invalid input which raises exceptions
-    3. cases which could impact other functons
+    1. Correct input with resulted in correct output
+    2. Invalid input which raises exceptions
+    3. Cases which could impact other functons
     
 It is using the strategies above that allowed our group to attempt to validate
 the behaviour of the fuctions are verify that the functions say what they are going
@@ -33,8 +35,13 @@ to do.
 
 During this iteration, not all functions could be tested due to the complications 
 in which our group ran into; like taking more time to write some of the functions
-which we planned to take less time.For the next iteration, more testing would have to 
-be done on the functions which our group couldn't finalise in the backend before
-the connecton with the frontend. 
+which we planned to take less time. As a result of this, some of the testing was done 
+manually and some of the automated testing also assumed that some of the other 
+functions it needed were fully working when they wern't. The stand up functions 
+were also not imlemented due to the complications which occured throughout iteration.
+For the next iteration, more testing would have to be done on the functions which our group
+couldn't finalise in the backend before the connecton with the frontend. This would 
+give more verification and validation that the system works as a whole and not 
+in individual components only.
 
 
