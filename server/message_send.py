@@ -7,6 +7,7 @@ Value Errors-
 from flask import Flask, request, Blueprint
 from json import dumps
 from channels_list import channels_list
+import jwt
 from data import *
 from datetime import datetime
 from Error import AccessError
@@ -48,8 +49,11 @@ def message_send():
     reacts = []
     is_pinned = False
     message_id = length
-    #Not sure how to get the u_id. spec says it gets sent from frontend
-    u_id = token
+    
+    #extract u_id from token
+    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    u_id = token_payload['u_id']
+    
     new_message = {
         'message_id': message_id,
         'u_id': u_id,
@@ -62,6 +66,7 @@ def message_send():
         if d['channel_id'] == channel_id:
             d['messages'].append(new_message)
             break
+        
     ret = {'message_id': message_id}
     return dumps(ret)
 
