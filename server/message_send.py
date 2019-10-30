@@ -39,8 +39,9 @@ def message_send():
     #    return
     
     length = 0
-    for d in data['channels']:  
-        if d['channel_id'] == channel_id:
+    for d,j in data['channels'].items(): 
+        #print(j)
+        if j['channel_id'] == channel_id:
             length = len(d['messages']) + 1
             break
     
@@ -62,10 +63,17 @@ def message_send():
         'reacts': reacts,
         'is_pinned': is_pinned
     }
-    for d in data['channels']:
-        if d['channel_id'] == channel_id:
-            d['messages'].append(new_message)
-            break
+    for d,j in data['channels'].items():
+        #print(j)
+        #print(channel_id)
+        if j['channel_id'] == int(channel_id):
+            #print("somethings")
+            data['channels'][d]['messages'].append(new_message)
+            ret = {'message_id': message_id}
+            return dumps(ret)
+            
+
+        
         
     ret = {'message_id': message_id}
     return dumps(ret)

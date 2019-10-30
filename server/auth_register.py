@@ -99,9 +99,13 @@ def auth_register():
 
     #ret['u_id'] = u_id
     token = jwt.encode({'u_id':u_id}, SECRET, algorithm='HS256').decode('utf-8')
-    ret  = dict()
-    ret['u_id'] = u_id
-    ret['token'] = token
-  
-    #print(ret)
+    #ret  = dict()
+    #ret['u_id'] = u_id
+    #ret['token'] = token
+    ret = {
+        'u_id': u_id,
+        'token':token,
+    }
+    
+    print(ret)
     return dumps(ret)
