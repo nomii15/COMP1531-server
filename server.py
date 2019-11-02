@@ -6,7 +6,7 @@ from flask import Flask, request
 from flask_mail import Mail, Message
 
 
-
+# if running on your computer, change path
 sys.path.insert(1,'/tmp_amd/cage/export/cage/3/z5110036/comp1531/project/W15A-DJMN/server/')
 from auth_login import login
 from auth_logout import logout
