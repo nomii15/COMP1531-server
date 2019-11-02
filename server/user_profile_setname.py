@@ -6,7 +6,7 @@ from token_check import *
 
 SETNAME = Blueprint('SETNAME', __name__)
 
-@SETNAME.route('/user/profile/setname', method=['PUT'])
+@SETNAME.route('/user/profile/setname', methods=['PUT'])
 def user_profile_setname():
     data = getData()
     token = request.form.get('token')

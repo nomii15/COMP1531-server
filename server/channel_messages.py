@@ -50,16 +50,24 @@ def getMessages():
 
             if len(message['messages']) < 50:
                 message['end'] = -1
+                end = len(message['messages']) - start
             else:    
                 message['end'] = start+50
-            ## range is wrong    
-            for i in range(1):
-                #print(data['channels'][channel_id])
-                items = data['channels'][channel_id]['messages']
-                for j in items:
-                    message['messages'].append(j['message'] ) 
+                end = start+50
+            
+            for items in data['channels'][channel_id]['messages']:
+                message['messages'].append(items)
+                
+            ## range is wrong 
+            #for i in range(start, end):
+            #    items = data['channels'][channel_id]['messages']
+            #    #print(items)
+            #    for j in items:
+            #        print(j)
+            #        message['messages'].append(j['message'] ) 
+            
 
-            #print(message)              
+            print(message)              
             return dumps(message)
 
         else:

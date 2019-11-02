@@ -6,15 +6,16 @@ Value Errors-
 '''
 from flask import Flask, request, Blueprint
 from json import dumps
-from channels_list import channels_list
+#from channels_list import channels_list
 import jwt
 from data import *
-from datetime import datetime
+from datetime import datetime, timezone
 from Error import AccessError
 from token_check import token_check
+from channel_check import id_check
 
 #APP = Flask(__name__)
-send = Blueprint('APP_send', __name__)
+send = Blueprint('send', __name__)
 @send.route('/message/send', methods = ['POST'])
 def message_send():
 
@@ -28,11 +29,14 @@ def message_send():
     #the access errors not working at the moment with postman. commented out for the moment
 
     token = request.form.get('token')
-    #if token_check(token) == False:
-    #    raise AccessError('Invalid Token')
+    if token_check(token) == False:
+        raise AccessError('Invalid Token')
     
     
     channel_id = request.form.get('channel_id')
+    if id_check(int(channel_id)) == False:
+        print("error")
+        return
     #list_of_channels =  channels_list(token)
     #if not any(d['channel_id'] == channel_id for d in list_of_channels):
     #    print('Access error')
@@ -46,14 +50,24 @@ def message_send():
             break
     
     now = datetime.now()
-    currentTime = now.strftime("%H:%M:%S")
-    reacts = []
+    timestamp = now.replace(tzinfo=timezone.utc).timestamp()
+    currentTime = timestamp
+    #currentTime = now.strftime("%H:%M:%S")
+    reacts = [{
+        'react_id': length,
+        'u_ids': [],
+        'is_this_user_reacted': False
+    }]
     is_pinned = False
     message_id = length
+
+    global SECRET
+    SECRET = getSecret()
     
     #extract u_id from token
     token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
+    u_id = int(token_payload['u_id'])
+    #print(u_id)
     
     new_message = {
         'message_id': message_id,
@@ -70,7 +84,8 @@ def message_send():
             #print("somethings")
             data['channels'][d]['messages'].append(new_message)
             ret = {'message_id': message_id}
-            return dumps(ret)
+            #print(new_message)
+            return dumps({'message_id': message_id})
             
 
         

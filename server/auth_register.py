@@ -21,7 +21,7 @@ name_first is more than 50 characters
 name_last is more than 50 characters
 '''
 
-register = Blueprint('APP_register', __name__)
+register = Blueprint('register', __name__)
 
 @register.route('/auth/register', methods=['POST'])
 def auth_register():
@@ -80,7 +80,7 @@ def auth_register():
     if len(handle) > 20:
         handle = handle[0:19]
 
-    u_id = user
+    u_id = int(user)
 
     data['users'][user] = {'email': email, 'password': hashlib.sha256(password.encode()), 'name_first': name_first,
      'name_last': name_last, 'u_id': u_id, 'loggedin': True, 'handle': handle}
@@ -102,10 +102,10 @@ def auth_register():
     #ret  = dict()
     #ret['u_id'] = u_id
     #ret['token'] = token
-    ret = {
-        'u_id': u_id,
-        'token':token,
-    }
+    #ret = {'token':token, 'u_id': u_id}   
     
-    print(ret)
-    return dumps(ret)
+    #print(ret)
+    return dumps({
+        'u_id': u_id,
+        'token': token
+    })
