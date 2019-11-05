@@ -41,25 +41,28 @@ def message_send():
     #if not any(d['channel_id'] == channel_id for d in list_of_channels):
     #    print('Access error')
     #    return
-    
+    global Message
+    Message = getMessage()
+
+    '''
     length = 0
     for d,j in data['channels'].items(): 
         #print(j)
         if j['channel_id'] == channel_id:
             length = len(d['messages']) + 1
             break
-    
+    '''
     now = datetime.now()
     timestamp = now.replace(tzinfo=timezone.utc).timestamp()
     currentTime = timestamp
     #currentTime = now.strftime("%H:%M:%S")
     reacts = [{
-        'react_id': length,
+        'react_id': Message,
         'u_ids': [],
         'is_this_user_reacted': False
     }]
     is_pinned = False
-    message_id = length
+    #message_id = Message
 
     global SECRET
     SECRET = getSecret()
@@ -70,27 +73,28 @@ def message_send():
     #print(u_id)
     
     new_message = {
-        'message_id': message_id,
+        'message_id': Message,
         'u_id': u_id,
         'message': message,
         'time_created': currentTime,
         'reacts': reacts,
         'is_pinned': is_pinned
     }
+    
     for d,j in data['channels'].items():
         #print(j)
         #print(channel_id)
         if j['channel_id'] == int(channel_id):
             #print("somethings")
             data['channels'][d]['messages'].append(new_message)
-            ret = {'message_id': message_id}
+            ret = {'message_id': Message}
             #print(new_message)
-            return dumps({'message_id': message_id})
+            return dumps({'message_id': Message})
             
 
         
-        
-    ret = {'message_id': message_id}
+    ret = {'message_id': Message}
+    incMessage()    
     return dumps(ret)
 
 #if __name__ == '__main__':
