@@ -4,17 +4,19 @@ global SECRET
 SECRET = 'COMP1531'
 
 global user
-user = 0
+user = 1
 
 global channel
-channel = 0
+channel = 1
+
+global Message
+Message = 1
 
 global data
 data = {
     'users': {},
     'channels' : {},
-    'channel_details' : {},
-    'reacts': []
+    'channel_details' : {}
 }
 
 global reset
@@ -25,6 +27,10 @@ reset = {
 def getData():
     global data
     return data
+
+def getMessage():
+    global Message
+    return Message 
 
 def getSecret():
     global SECRET
@@ -45,6 +51,10 @@ def incUser():
 def incChannel():
     global channel
     channel+=1
+
+def incMessage():
+    global Message
+    Message+=1    
 
 def getReset():
     global reset
