@@ -50,9 +50,8 @@ def message_react():
                     print(react)
                     print(react_id)
                     print(react['react_id'])
-                    print(item['u_id'])
-                    print(u_id)
-                    if react['react_id'] == int(react_id): # need to fix this line
+                    
+                    if react['react_id'] == int(react_id):
                         print("found react id")
                         if u_id == item['u_id']:
                             react['is_this_user_reacted'] = True
