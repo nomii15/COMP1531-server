@@ -83,7 +83,7 @@ def auth_register():
     u_id = int(user)
 
     data['users'][user] = {'email': email, 'password': hashlib.sha256(password.encode()), 'name_first': name_first,
-     'name_last': name_last, 'u_id': u_id, 'loggedin': True, 'handle': handle}
+     'name_last': name_last, 'u_id': u_id, 'loggedin': True, 'handle': handle, 'profile_img_url': None}
     incUser()
 
     #think about implementing a variable for u_id within data

@@ -51,15 +51,15 @@ def auth_login():
                 #u_id = ''.join(u_id)
                 #ret['u_id'] = u_id
                 pas['loggedin'] = True
-                u_id = user
+                #u_id = user
                 # if the u_id is greater than 20 character, reduce
                 #if len(u_id)>20:
                 #    u_id = u_id[0:19]
                 global SECRET    
                 SECRET = getSecret()    
-                token = jwt.encode({'u_id': u_id}, SECRET, algorithm='HS256').decode('utf-8')
+                token = jwt.encode({'u_id': pas['u_id']}, SECRET, algorithm='HS256').decode('utf-8')
                 ret = dict()
-                ret['u_id'] = u_id
+                ret['u_id'] = pas['u_id']
                 ret['token'] = token
                 #ret = {u_id, token}
                 #print(ret)
