@@ -37,12 +37,13 @@ def user_profile():
             name_first = item['name_first']
             name_last = item['name_last']
             handle = item['handle']
+            url = item['profile_img_url']
             return dumps({
                 'email' : email,
                 'name_first' : name_first,
                 'name_last' : name_last,
-                'handle_str' : handle
-                #'profile_img_url': None
+                'handle_str' : handle,
+                'profile_img_url': url
             })
     #return
     #return dumps({

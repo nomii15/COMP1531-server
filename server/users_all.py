@@ -15,7 +15,7 @@ def users_all(token):
     temp = {}
 
     for i, items in data['users'].items():
-        print(items)
+        #print(items)
         temp = {
             'u_id': items['u_id'],
             'email': items['email'],

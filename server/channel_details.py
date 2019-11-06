@@ -26,8 +26,8 @@ def channel_details():
     for i, item in data['users'].items():
         for temp in data['channel_details'][channel_id]['all_members']:
             if item['u_id'] == temp['u_id']:
-                ret['owner_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last']})
+                ret['owner_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'], 'profile_img_url': item['profile_img_url']})
         for hold in data['channel_details'][channel_id]['all_members']:
             if item['u_id'] == hold['u_id']:
-                ret['all_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last']})
+                ret['all_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'], 'profile_img_url': item['profile_img_url']})
     return dumps(ret)
