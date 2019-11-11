@@ -10,7 +10,7 @@ SETHANDLE = Blueprint('SETHANDLE', __name__)
 def user_profile_sethandle():
     data = getData()
     token = request.form.get('token')
-    handle = request.form.get('handle_str')
+    handle = str(request.form.get('handle_str'))
     #check token is valid or not
     if token_check(token) is not True:
         return dumps({
@@ -34,3 +34,4 @@ def user_profile_sethandle():
             break
     return dumps({
     })
+
