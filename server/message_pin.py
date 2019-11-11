@@ -13,17 +13,18 @@ from json import dumps
 from data import *
 from Error import AccessError
 from token_check import token_check
+from check_channel_owner import channel_owner
 import jwt
 
-pin = Blueprint('APP_pin', __name__)
-@pin.route('/message/pin', methods = ['POST'])
-def message_pin():
 
-    message_id = request.form.get('message_id')
-    token = request.form.get('token')
-
+def message_pin(token, message_id):
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        ret = {
+            "code" : 400,
+            "name": "AccessError",
+            "message" : "Your idToken is invalid",
+        }
+        return dumps(ret)
     
     global data
     data = getData()
@@ -32,23 +33,57 @@ def message_pin():
     global SECRET 
     SECRET = getSecret()
     token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
+    uid = token_payload['u_id']
+
+    #message_channel_name = 'empty'
+    #message_channel_id = -1
 
     # find the message and modify the pin operation
     for i, items in data['channels'].items():
+        print(i)
         for item in items['messages']:
             if item['message_id']==int(message_id):
                 print("got message id")
-                # got the message, check its pin
-                if item['is_pinned']==False:
-                    item['is_pinned']=True
-                    print(item)
-                    return dumps({})
+                #message_channel_name = items['name']
+                #message_channel_id = items['channel_id']
+                #only if user is an admin - need to use channel_id instead of channel_name inn the channel owner check below
+                if channel_owner(items['name'], uid) == True:
+                    # got the message, check its pin
+                    if item['is_pinned'] == False:
+                        item['is_pinned'] = True
+                        print(item)
+                        return dumps({})
+                    else:
+                        ret = {
+                            "code" : 400,
+                            "name": "ValueError",
+                            "message" : "Message is already pinned",
+                        }
+                        return dumps(ret)
                 else:
-                    pass
-                    #error, message already pinned    
+                    ret = {
+                        "code" : 400,
+                        "name": "ValueError",
+                        "message" : "The authorised user is not an admin",
+                    }
+                    return dumps(ret)
+
+    #if you get to this logic, means you couldnt find message with messageId
+    ret = {
+        "code" : 400,
+        "name": "ValueError",
+        "message" : "Could not find message, with message Id",
+    }
+    return dumps(ret)   
                 
 
+pin = Blueprint('pin', __name__)
+@pin.route('/message/pin', methods = ['POST'])
+def route():
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+
+    return dumps(message_pin(token, message_id))
 
 
 '''
