@@ -6,7 +6,6 @@ Value Errors-
 '''
 from flask import Flask, request, Blueprint
 from json import dumps
-#from channels_list import channels_list
 import jwt
 from data import *
 from datetime import datetime, timezone
@@ -15,43 +14,48 @@ from token_check import token_check
 from channel_check import id_check
 
 #APP = Flask(__name__)
-send = Blueprint('send', __name__)
-@send.route('/message/send', methods = ['POST'])
-def message_send():
+#send = Blueprint('send', __name__)
+#@send.route('/message/send', methods = ['POST'])
 
-    message = request.form.get('message')
+def message_send(token, channel_id, message):
+
+    #message = request.form.get('message')
     if (len(message) > 1000):
-        raise ValueError("Message too long")
+        ret = {
+            "code" : 400,
+            "name": "ValueError",
+            "message" : "The message sent was too long",
+        }
+        return dumps(ret)
+        #raise ValueError("Message too long")
 
     global data
     data = getData()
 
-    #the access errors not working at the moment with postman. commented out for the moment
-
-    token = request.form.get('token')
+    #token = request.form.get('token')
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        ret = {
+            "code" : 400,
+            "name": "AccessError",
+            "message" : "Your idToken is invalid",
+        }
+        return dumps(ret)
+        #raise AccessError('Invalid Token')
     
     
-    channel_id = request.form.get('channel_id')
+    #channel_id = request.form.get('channel_id')
     if id_check(int(channel_id)) == False:
-        print("error")
-        return
-    #list_of_channels =  channels_list(token)
-    #if not any(d['channel_id'] == channel_id for d in list_of_channels):
-    #    print('Access error')
-    #    return
+        ret = {
+            "code" : 400,
+            "name": "AccessError",
+            "message" : "You are trying to send a message to a channel you are not apart of",
+        }
+        return dumps(ret)
+
+
     global Message
     Message = getMessage()
 
-    '''
-    length = 0
-    for d,j in data['channels'].items(): 
-        #print(j)
-        if j['channel_id'] == channel_id:
-            length = len(d['messages']) + 1
-            break
-    '''
     now = datetime.now()
     timestamp = now.replace(tzinfo=timezone.utc).timestamp()
     currentTime = timestamp
@@ -82,13 +86,9 @@ def message_send():
     }
     
     for d,j in data['channels'].items():
-        #print(j)
-        #print(channel_id)
         if j['channel_id'] == int(channel_id):
-            #print("somethings")
             data['channels'][d]['messages'].append(new_message)
             ret = {'message_id': Message}
-            #print(new_message)
             return dumps({'message_id': Message})
             
 
@@ -97,6 +97,15 @@ def message_send():
     incMessage()    
     return dumps(ret)
 
+
+send = Blueprint('send', __name__)
+@send.route('/message/send', methods = ['POST'])
+def route():
+    message = request.form.get('message')
+    token = request.form.get('token')
+    channel_id = request.form.get('channel_id')
+
+    return dumps(message_send(token, channel_id, message))
 #if __name__ == '__main__':
 #    APP.run(debug=True)
 
