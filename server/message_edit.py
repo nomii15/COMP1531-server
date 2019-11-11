@@ -83,8 +83,15 @@ def message_edit(token, message_id, message):
                 if message['message_id'] == int(message_id):
                     print('found message and the message editer is the owner of the channel')
                     message['message'] = message
-                    return dumps({})  
+                    return dumps({})
 
+    #you would only get down to this logic if you did not create message and are not an owner
+    ret = {
+        "code" : 400,
+        "name": "AccessError",
+        "message" : "You are not the creator of the message or owner of the channel",
+        }
+    return dumps(ret)
 
 
 edit = Blueprint('edit', __name__)
