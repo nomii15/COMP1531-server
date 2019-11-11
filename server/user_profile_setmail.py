@@ -24,6 +24,7 @@ def user_profile_setmail():
     for key, item in data['users'].items():
         if item['email'] == email:
             raise ValueError("email address has been used")
+            
     #decode the token and get u_id of the authorised user
     SECRET = getSecret()
     payload = jwt.decode(token, SECRET, algorithms=['HS256'])
