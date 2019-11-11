@@ -16,30 +16,54 @@ from Error import AccessError
 from token_check import token_check
 
 from datetime import datetime
-
+from channels_listall import channels_listall
 from channels_list import channels_list
 from message_send import message_send
 
-sendlater = Blueprint('APP_sendlater', __name__)
-@sendlater.route('message/sendlater', methods = ['POST'])
-def message_sendlater():
-    token = request.form.get('token')
-    channel_id = request.form.get('channel_id')
-    message = request.form.get('message')
-    time_sent = request.form.get('time_sent')
+
+def message_sendlater(token, channel_id, message, time_sent):
 
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
-    
+        ret = {
+            "code" : 400,
+            "name": "AccessError",
+            "message" : "Your idToken is invalid",
+        }
+        return dumps(ret)
+
+    allChannels = channels_listall(token)
+    if channel_id not in allChannels:
+        ret = {
+            "code" : 400,
+            "name": "ValueError",
+            "message" : "Could not find a channel with the specified Id",
+        }
+        return dumps(ret)
+
     subscribedChannels = channels_list(token)
     if channel_id not in subscribedChannels:
-        raise ValueError("Invalid Channel ID")
-
+        ret = {
+            "code" : 400,
+            "name": "AccessError",
+            "message" : "You are not apart of the channel you are trying to post to",
+        }
+        return dumps(ret)
+        
     if len(message) > 1000:
-        raise ValueError("The message you are trying to send is too large")
+        ret = {
+            "code" : 400,
+            "name": "ValueError",
+            "message" : "The message sent was too long",
+        }
+        return dumps(ret)
     
     if time_sent < datetime.now().time():
-        raise ValueError("The time you selected is in the past")
+        ret = {
+            "code" : 400,
+            "name": "ValueError",
+            "message" : "You cannot send a message in the past",
+        }
+        return dumps(ret)
 
     global data
     data = getData()
@@ -53,3 +77,14 @@ def message_sendlater():
     message_id = message_send(token, channel_id, message)
 
     return dumps(message_id)
+
+
+sendlater = Blueprint('APP_sendlater', __name__)
+@sendlater.route('message/sendlater', methods = ['POST'])
+def route():
+    token = request.form.get('token')
+    channel_id = request.form.get('channel_id')
+    message = request.form.get('message')
+    time_sent = request.form.get('time_sent')
+    
+    return dumps(message_sendlater(token, channel_id, message, time_sent))

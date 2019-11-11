@@ -13,42 +13,62 @@ from json import dumps
 from data import *
 from Error import AccessError
 from token_check import token_check
+from check_channel_owner import channel_owner
 import jwt
 
-unpin = Blueprint('APP_unpin', __name__)
-@unpin.route('/message/unpin', methods = ['POST'])
-def message_unpin():
 
-    message_id = request.form.get('message_id')
-    token = request.form.get('token')
-
+def message_unpin(token, message_id):
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        ret = {
+            "code" : 400,
+            "name": "AccessError",
+            "message" : "Your idToken is invalid",
+        }
+        return dumps(ret)
     
     global data
     data = getData()
 
-        # retrieve u_id from token
+    # retrieve u_id from token
     global SECRET 
     SECRET = getSecret()
     token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
+    uid = token_payload['u_id']
 
     # find the message and modify the pin operation
     for i, items in data['channels'].items():
+        print(i)
         for item in items['messages']:
             if item['message_id']==int(message_id):
                 print("got message id")
-                # got the message, check its pin
-                if item['is_pinned']==True:
-                    item['is_pinned']=False
-                    print(item)
-                    return dumps({})
-                else:
-                    pass
-                    #error, message already pinned    
-                
+                if channel_owner(items['name'], uid) == True:
+                    if item['is_pinned']==True:
+                        item['is_pinned']=False
+                        print(item)
+                        return dumps({})
+                    else:
+                        ret = {
+                            "code" : 400,
+                            "name": "ValueError",
+                            "message" : "Message is already already unpinned",
+                        }
+                        return dumps(ret)  
+                else :
+                    ret = {
+                        "code" : 400,
+                        "name": "ValueError",
+                        "message" : "The authorised user is not an admin",
+                    }
+                    return dumps(ret) 
 
+
+unpin = Blueprint('unpin', __name__)
+@unpin.route('/message/unpin', methods = ['POST'])
+def route():
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+    
+    return dumps(message_unpin(token, message_id))
 '''
 #all channels user is apart of
 all_channels = channels_list(token)
