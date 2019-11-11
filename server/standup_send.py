@@ -6,6 +6,8 @@ from token_check import token_check
 from channel_check import id_check, member_check
 from Error import AccessError
 from datetime import timezone
+from message_send import message_send
+import jwt
 
 '''
 Sending a message to get buffered in the standup queue, assuming a standup is currently active
@@ -38,6 +40,9 @@ def standup_send(token, channel_id, message):
     # check whether a standup is not active
     if data['channels'][channel_id]['standup_active'] == False:
         raise ValueError("Standup not active")
+
+    # call message send to send value
+    message_send(token, channel_id, message)   
 
     # add the message to a buffer to store
     global standup
