@@ -12,13 +12,13 @@ from data import *
 channel_message = Blueprint('channel_message', __name__)
 
 @channel_message.route('/channel/messages', methods = ['GET'])
-def getMessages():
-
+def Messages():
     token = request.args.get('token')
     channel_id = int(request.args.get('channel_id'))
     start = int(request.args.get('start'))
+    return dumps(getMessages(token, channel_id, start))
 
-
+def getMessages():
     global data
     data = getData()
 
@@ -42,7 +42,7 @@ def getMessages():
             # get the messages
             # add to message return
             if len(data['channels'][channel_id]['messages']) == 0:
-                return dumps(message)
+                return message
             
             #check if valid start point to read messages
             if start >= len( data['channels'][channel_id]['messages'] ):
@@ -57,7 +57,7 @@ def getMessages():
                 message['messages'].append(data['channels'][channel_id]['messages'][i] )  
 
             #print(message)              
-            return dumps(message)
+            return message
 
         else:
             pass
