@@ -20,14 +20,22 @@ Given an email address, if the user is a registered user, send's them a an email
 
 N/A
 '''
-
-requestR = Blueprint('requestR', __name__)
-
-@requestR.route('/auth/passwordreset/request', methods=['POST'])
-def auth_passwordreset_request():
-
-    email = request.form.get('email')
+def auth_passwordreset_request(email):   
     
+    #invalid email entered
+    if email_check(email) == "Invalid Email":
+        raise ValueError(description = "Invalid Email Address")
+    
+    global data
+    data = getData()
+    check = 0
+    for j, items in data['users'].items():
+        if items['email'] == email:
+            check = 1
+
+    if check!=1:
+        raise ValueError(description = "Not a Registed Email Address")
+
     
     mail = Mail(APP) 
     
@@ -37,18 +45,7 @@ def auth_passwordreset_request():
     MAIL_USE_SSL=True,
     MAIL_USERNAME = 'DJMN1531@gmail.com',
     MAIL_PASSWORD = "password1531"  
-                    )
-    
-    
-                
-
-    
-    #invalid email entered
-    if email_check(email) == "Invalid Email":
-        raise ValueError("Invalid Email Address")
-
-    global data
-    data = getData()
+                    ) 
 
     # generate a code
     code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
@@ -72,17 +69,24 @@ def auth_passwordreset_request():
                 reset = getReset()
                 reset['codes'] = {'u_id': item['u_id'], 'code': code}
                 print("mail sent")
-                return dumps({})
+                return {}
             except Exception as e:
+                # add a raise for when the message reset wasnt sent though
                 print("not sent")
                 print(str(e))
                 return (str(e))        
-                       
-
-            # break
-
-    # if it gets to here, email not registered                 
-    raise ValueError("Not a Registed Email Address")
+            
 
 
 
+
+
+
+
+requestR = Blueprint('requestR', __name__)
+
+@requestR.route('/auth/passwordreset/request', methods=['POST'])
+def passwordreset_request():
+
+    email = request.form.get('email')
+    return dumps( auth_passwordreset_request(email) )
