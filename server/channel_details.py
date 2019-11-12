@@ -33,13 +33,5 @@ def channel_details(token, channel_id):
                 ret['owner_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'], 'profile_img_url': item['profile_img_url']})
         for hold in data['channel_details'][channel_id]['all_members']:
             if item['u_id'] == hold['u_id']:
-<<<<<<< HEAD
-                ret['all_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last']})
-<<<<<<< HEAD
-=======
                 ret['all_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'], 'profile_img_url': item['profile_img_url']})
->>>>>>> ba01d2dbdc9a112ceec5ba6f568affffcbf8ddc5
-    return dumps(ret)
-=======
     return ret
->>>>>>> channel
