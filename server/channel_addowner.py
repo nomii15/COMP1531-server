@@ -19,8 +19,14 @@ from Error import *
 from data import *
 
 addowner = Blueprint('addowner', __name__)
+<<<<<<< HEAD
 @addowner.route('/channel/addowner')
 def Addowner():
+=======
+@addowner.route('/channel/addowner', method=['GET'])
+def channel_addowner():
+    
+>>>>>>> ba01d2dbdc9a112ceec5ba6f568affffcbf8ddc5
     token = request.form.get('token')
     channel_id = request.form.get('channel_id')
     u_id = request.form.get('u_id')

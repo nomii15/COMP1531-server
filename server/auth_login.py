@@ -17,16 +17,10 @@ Email entered is not a valid email
 Email entered does not belong to a user
 '''
 
-
-login = Blueprint('APP_login', __name__)
-@login.route('/auth/login', methods=['POST'])
-def auth_login():
-    
-    email = request.form.get('email')    
-    password = request.form.get('password')
+def auth_login(email, password):
 
     if email_check(email) == "Invalid Email":
-        raise ValueError("Invalid Email Address")
+        raise ValueError(description = "Invalid Email Address")
         
 
     # find the user
@@ -51,28 +45,36 @@ def auth_login():
                 #u_id = ''.join(u_id)
                 #ret['u_id'] = u_id
                 pas['loggedin'] = True
-                u_id = user
+                #u_id = user
                 # if the u_id is greater than 20 character, reduce
                 #if len(u_id)>20:
                 #    u_id = u_id[0:19]
                 global SECRET    
                 SECRET = getSecret()    
-                token = jwt.encode({'u_id': u_id}, SECRET, algorithm='HS256').decode('utf-8')
+                token = jwt.encode({'u_id': pas['u_id']}, SECRET, algorithm='HS256').decode('utf-8')
                 ret = dict()
-                ret['u_id'] = u_id
+                ret['u_id'] = pas['u_id']
                 ret['token'] = token
                 #ret = {u_id, token}
                 #print(ret)
-                return dumps(ret)
+                return ret
             else:
-                raise ValueError("Invalid Password")
+                raise ValueError(description = "Incorrect Password")
         else:
             pass
         i+=1    
 
-    raise ValueError("Incorrect Email address")
+    raise ValueError(description = "Incorrect Email address")
     # if get to here, email isnt associated with an account
     # return error, email not associated with a account
     
     
+
+
+login = Blueprint('APP_login', __name__)
+@login.route('/auth/login', methods=['POST'])
+def Login():
     
+    email = request.form.get('email')    
+    password = request.form.get('password')
+    return dumps( auth_login(email, password)  )

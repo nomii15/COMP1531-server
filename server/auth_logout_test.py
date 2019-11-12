@@ -1,46 +1,32 @@
 import pytest
 from auth_logout import auth_logout
-from auth_register_test import testRegister
+from auth_register import auth_register
+from data import *
 
 
-#dummy test cases for logout (since no return value)
-class testLogout():
-    def __init__(self):
-        self.id = 0
-        self.token = 0
-    def logout(self,u_id, token):
-        if u_id == 0:
-            self.token=None
-        else:
-            raise ValueError("Invalid Token")    
-
-
-
-        
-
+#dummy test cases for logout (since no return value) 
 
 
 def test_auth_logout1():
     #create a test account
-    register = testRegister("Someemial@hotmail.com.au", "Hello123", "First", "Last")
-    test = register.valid()
+    register = auth_register("Someemial@hotmail.com.au", "Hello123", "First", "Last")
+    
     #user is logged in, and logout is called
-    log = testLogout()
-    log.logout(test['u_id'], test['token'])
-    assert log.token == None
+   
+    assert auth_logout(register['token'])
    
     #this should successfully logout the user and deactivate the token
    
 def test_auth_logout2():
        
-    register = testRegister("Someemial@hotmail.com.au", "Hello123", "First", "Last")
-    test = register.valid()
-    #user is logged in, and logout is called
-    log = testLogout()
-    log.logout(test['u_id'], "notacorrecttoken")
+    #create a test account
+    register = auth_register("email@hotmail.com.au", "Hello123", "First", "Last")
+    
+    # log out the user
+    auth_logout(register['token'])
    
-    with pytest.raises(ValueError, match='*Invalid Token*'):
-        log.logout("1", "notacorrecttoken")
+   #attempt to logout the user who isnt logged in
+    assert auth_logout(register['token']) == False
     
     #this should not log the user out as the token passed in is not 
     #a valid token

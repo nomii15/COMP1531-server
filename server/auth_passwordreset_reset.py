@@ -14,17 +14,11 @@ ValueError when:
 reset_code is not a valid reset code
 Password entered is not a valid password
 '''
-
-reset = Blueprint('reset', __name__)
-@reset.route('/auth/passwordreset/reset', methods=['POST'])
 def auth_passwordreset_reset():
 
-    reset_code = request.form.get('reset_code')
-    new_password = request.form.get('new_password')
-    
     #check new password to see if its valie    
     if len(new_password) < 5 or len(new_password) == 0:
-        raise ValueError("Invalid Password Length")
+        raise ValueError(description = "Invalid Password Length")
 
     # get the reset code for the user requesting reset
     global reset
@@ -41,7 +35,16 @@ def auth_passwordreset_reset():
                 if item['u_id'] == j['u_id']:
                     item['password'] = hashlib.sha256(new_password.encode())
                     del(j)
-                    return dumps({})
+                    return {}
 
-    raise ValueError("Incorrect Reset Code")
+    raise ValueError(description = "Incorrect Reset Code")
             
+
+
+reset = Blueprint('reset', __name__)
+@reset.route('/auth/passwordreset/reset', methods=['POST'])
+def passwordreset_reset():
+
+    reset_code = request.form.get('reset_code')
+    new_password = request.form.get('new_password')
+    return dumps( auth_passwordreset_reset(reset_code,new_password) )

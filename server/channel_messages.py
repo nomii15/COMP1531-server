@@ -37,21 +37,35 @@ def getMessages():
 
     for i,channel in data['channels'].items():
         #print(channel['channel_id'])
-        #print(channel_id)
-        if channel_id == channel['channel_id']:
+        #print(channel)
+        if int(channel_id) == channel['channel_id']:
             # get the messages
             # add to message return
             if len(data['channels'][channel_id]['messages']) == 0:
                 return message
             
             #check if valid start point to read messages
-            if start >= len( data['channels'][channel_id]['messages'] ):
+            if start > len(data['channels'][channel_id]['messages']):
                 raise ValueError("Start greater than number of messages")
 
             if len(message['messages']) < 50:
                 message['end'] = -1
+                end = len(message['messages']) - start
             else:    
                 message['end'] = start+50
+                end = start+50
+            
+            for items in data['channels'][channel_id]['messages']:
+                message['messages'].append(items)
+                
+            ## range is wrong 
+            #for i in range(start, end):
+            #    items = data['channels'][channel_id]['messages']
+            #    #print(items)
+            #    for j in items:
+            #        print(j)
+            #        message['messages'].append(j['message'] ) 
+            
 
             for i in range(start, end):
                 message['messages'].append(data['channels'][channel_id]['messages'][i] )  

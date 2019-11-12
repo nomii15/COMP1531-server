@@ -2,12 +2,12 @@ from json import dumps
 from flask import request, Blueprint
 import jwt
 from data import *
-from email_check.py import *
-from token_check import *
+from email_check import email_check
+from token_check import token_check
 
 SETMAIL = Blueprint('SETMAIL', __name__)
 
-@SETMAIL.route('/user/profile/setmail', method=['PUT'])
+@SETMAIL.route('/user/profile/setemail', methods=['PUT'])
 def user_profile_setmail():
     data = getData()
     token = request.form.get('token')
@@ -24,6 +24,7 @@ def user_profile_setmail():
     for key, item in data['users'].items():
         if item['email'] == email:
             raise ValueError("email address has been used")
+            
     #decode the token and get u_id of the authorised user
     SECRET = getSecret()
     payload = jwt.decode(token, SECRET, algorithms=['HS256'])

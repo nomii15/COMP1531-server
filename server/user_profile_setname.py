@@ -6,12 +6,12 @@ from token_check import *
 
 SETNAME = Blueprint('SETNAME', __name__)
 
-@SETNAME.route('/user/profile/setname', method=['PUT'])
+@SETNAME.route('/user/profile/setname', methods=['PUT'])
 def user_profile_setname():
     data = getData()
     token = request.form.get('token')
-    new_name_first = request.form.get('name_first')
-    new_name_last = request.form.get('name_last')
+    new_name_first = str(request.form.get('name_first'))
+    new_name_last = str(request.form.get('name_last'))
     #check token is valid or not
     if token_check(token) is not True:
         return dumps({

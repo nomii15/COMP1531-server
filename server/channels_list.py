@@ -44,7 +44,7 @@ def channels_list(token):
                 channelret.append({'channel_id': i, 'name': channel['name']})
 
     ret = {'channels': channelret} 
-    print(ret)       
+    #print(ret)       
     '''
     ret = dict()
     for channel in channel_list:

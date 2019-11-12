@@ -49,10 +49,6 @@ def channel_join(token, channel_id):
     global data
     data = getData()
 
-    global SECRET
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
 
 
     # value error when channel does not exist
