@@ -1,4 +1,5 @@
 # storing of lists for variables accross multiple functions
+from werkzeug.exceptions import HTTPException
 
 global SECRET
 SECRET = 'COMP1531'
@@ -18,6 +19,14 @@ data = {
     'channels' : {},
     'channel_details' : {}
 }
+
+# temp standup buffer to hold message during that time
+global standup
+standup = []
+
+def getStandup():
+    global standup
+    return standup
 
 global reset
 reset = {
@@ -59,3 +68,8 @@ def incMessage():
 def getReset():
     global reset
     return reset
+
+# error handling
+class ValueError(HTTPException):
+    code = 400
+    message = 'No message specified'
