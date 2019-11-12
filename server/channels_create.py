@@ -62,7 +62,7 @@ def channels_create(token, name, is_public):
     
     # adding to channel details, registering as a member of the channel
    
-    data['channel_details'][channel] = {'name' : name, 'owner_members' : [], 'all_members' : [] , 'public': is_public}
+    data['channel_details'][channel] = {'channel_id' : channel_id, 'name' : name, 'owner_members' : [], 'all_members' : [] , 'public': is_public}
     data['channel_details'][channel]['owner_members'].append(detail)
     data['channel_details'][channel]['all_members'].append(detail)
     incChannel()
