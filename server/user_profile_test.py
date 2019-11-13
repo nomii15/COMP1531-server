@@ -1,40 +1,25 @@
 import pytest
-        
-data = {
-    'users':{
-        '001':{'email': 'abcdefg@gmail.com', 'name_first': 'Tom', 'name_last': 'Happy', 'handle': 'tomhappy'},
-        '002':{'email': 'qwerty@gmail.com', 'name_first': 'Bob', 'name_last': 'Sad', 'handle': 'bobsad'}
-    }
-}
+import jwt
+from auth_register import auth_register
+from user_profile import user_profile
+from data import *
 
-class test_profile():
-    def __init__(self, token, u_id):
-        self.token = token
-        self.u_id = u_id
-        
-    def id_check(self):
-        for key, item in data['users'].items():
-            if key == self.u_id:
-                return True
-        raise ValueError("invalid u_id")
-            
-    def success(self):
-        return data['users'][self.u_id]
+SECRET = getSecret()
 
-#return information for user 001
-def test_1():
-    test1 = test_profile(12345, '001')
-    assert test1.id_check() == True
-    assert test1.success() == {'email': 'abcdefg@gmail.com', 'name_first': 'Tom', 'name_last': 'Happy', 'handle': 'tomhappy'}
+def test_user_profile_success():
+    auth_register('qwe123@gmail.com', 'qwe12345', 'Vincent', 'Zhang')
+    auth_register('abcdef@gmail.com', 'secret123', 'ABC', 'Happy')    
+    token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
+    assert user_profile(1, token1) == {'email': 'qwe123@gmail.com', 'name_first': 'Vincent', 'name_last': 'Zhang', 'handle_str': 'vincentzhang1', 'profile_img_url': None}
+    assert user_profile(2, token1) == {'email': 'abcdef@gmail.com', 'name_first': 'ABC', 'name_last': 'Happy', 'handle_str': 'abchappy2', 'profile_img_url': None}
+    assert user_profile(1, token2) == {'email': 'qwe123@gmail.com', 'name_first': 'Vincent', 'name_last': 'Zhang', 'handle_str': 'vincentzhang1', 'profile_img_url': None}
 
-#return information for user 002
-def test_2():
-    test2 = test_profile(54321, '002')
-    assert test2.id_check() == True
-    assert test2.success() == {'email': 'qwerty@gmail.com', 'name_first': 'Bob', 'name_last': 'Sad', 'handle': 'bobsad'}
+def test_user_profile_invalidtoken():
+    token = jwt.encode({'u_id': 3}, SECRET, algorithm='HS256').decode('utf-8')
+    assert user_profile(1, token) == {'error' : 'invalid token'}
     
-#invalid u_id
-def test_3():
-    test3 = test_profile(23451, '003')
-    with pytest.raises(ValueError, match='*invalid u_id*'):
-        test3.id_check()
+def test_user_profile_invalid_uid():
+    token = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    with pytest.raises(ValueError, match='invalid u_id'):
+        user_profile(3, token)
