@@ -9,21 +9,8 @@ from channel_check import *
 from data import *
 
 
-<<<<<<< HEAD
-
 def channel_messages(token, channel_id, start):
-=======
-channel_message = Blueprint('channel_message', __name__)
 
-@channel_message.route('/channel/messages', methods = ['GET'])
-def Messages():
-    token = request.args.get('token')
-    channel_id = int(request.args.get('channel_id'))
-    start = int(request.args.get('start'))
-    return dumps(getMessages(token, channel_id, start))
-
-def getMessages():
->>>>>>> a2d3a5d0170f743c88dd807d3c6713e44c700135
     global data
     data = getData()
 
