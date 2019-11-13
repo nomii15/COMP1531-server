@@ -9,16 +9,8 @@ from channel_check import *
 from data import *
 
 
-channel_message = Blueprint('channel_message', __name__)
 
-@channel_message.route('/channel/messages', methods = ['GET'])
-def getMessages():
-
-    token = request.args.get('token')
-    channel_id = int(request.args.get('channel_id'))
-    start = int(request.args.get('start'))
-
-
+def channel_messages(token, channel_id, start):
     global data
     data = getData()
 
@@ -42,7 +34,7 @@ def getMessages():
             # get the messages
             # add to message return
             if data['channels'][channel_id]['messages'] == None:
-                return dumps(message)
+                return message
             
             #check if valid start point to read messages
             if start > len(data['channels'][channel_id]['messages']):
@@ -68,7 +60,7 @@ def getMessages():
             
 
             print(message)              
-            return dumps(message)
+            return message
 
         else:
             pass
@@ -83,4 +75,17 @@ def getMessages():
     # check valid token
 
     # get the messages from the channel id
-    
+
+
+
+
+
+channel_message = Blueprint('channel_message', __name__)
+
+@channel_message.route('/channel/messages', methods = ['GET'])
+def getMessages():
+
+    token = request.args.get('token')
+    channel_id = int(request.args.get('channel_id'))
+    start = int(request.args.get('start'))
+    return dumps( channel_messages(token, channel_id, start)     )
