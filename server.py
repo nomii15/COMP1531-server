@@ -1,7 +1,7 @@
 """Flask server"""
 import sys
 from flask_cors import CORS
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from json import dumps
 from werkzeug.exceptions import HTTPException
 from flask_mail import Mail, Message
@@ -62,7 +62,7 @@ def defaultHandler(err):
     return response
 
 
-APP = Flask(__name__)
+APP = Flask(__name__, static_url_path='/static/')
 APP.config['TRAP_HTTP_EXCEPTIONS'] = True
 APP.register_error_handler(Exception, defaultHandler)
 CORS(APP)
@@ -129,6 +129,11 @@ def echo2():
     return dumps({
         'echo' : request.form.get('echo'),
     })
+
+@APP.route('/static/<path:path>')
+def send_js(path):
+    return send_from_directory(APP.static_url_path , path)
+    
 
 if __name__ == '__main__':
     APP.run(port=(sys.argv[1] if len(sys.argv) > 1 else 5000))
