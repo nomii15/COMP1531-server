@@ -19,10 +19,12 @@ ValueError when:
 
 leave = Blueprint('leave', __name__)
 @leave.route('/channel/leave', methods=['POST'])
-def channel_leave():
+def Leave():
     token = request.form.get('token')
     channel_id = int(request.form.get('channel_id'))    
-   
+    return dumps(channel_leave(token, channel_id))
+
+def channel_leave(token, channel_id):
     if token_check(token) == False:
         raise AccessError('Invalid Token')   
 
@@ -52,7 +54,7 @@ def channel_leave():
                     data['channel_details'][channel_id]['owner_members'].remove(ret)
                     print(data['channel_details'][channel_id]['all_members'])
                     print(data['channel_details'][channel_id]['owner_members'])
-                    return dumps({})
+                    return ret
             # if get to end of this loop, user isnt valid
     raise AccessError("not in channel")    
     # if here channel doesnt exist 

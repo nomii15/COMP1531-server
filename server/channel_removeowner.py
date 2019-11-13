@@ -21,12 +21,13 @@ from data import *
 
 removeowner = Blueprint('removeowner', __name__)
 @removeowner.route('/channel/removeowner')
-def channel_removeowner(token, channel_id, u_id):
-    
+def Removeowner():
     token = request.form.get('token')
     channel_id = request.form.get('channel_id')
     u_id = request.form.get('u_id')
+    return dumps(channel_removeowner(token, channel_id, u_id))
 
+def channel_removeowner(token, channel_id, u_id):
     if token_check(token) == False:
         raise AccessError('Invalid Token')
 
@@ -54,4 +55,4 @@ def channel_removeowner(token, channel_id, u_id):
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
                     data['channels'][channel_id]['owner_members'].remove(ret)
-                    return dumps({})
+                    return ret

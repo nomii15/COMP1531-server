@@ -18,11 +18,13 @@ ValueError when:
 
 Channels_create = Blueprint('Channels_create', __name__)
 @Channels_create.route('/channels/create', methods=['POST'])
-def channels_create():
+def Create():
     token = request.form.get('token')
     name = request.form.get('name')
     is_public = request.form.get('is_public')
+    return dumps(channels_create(token, name, is_public))
 
+def channels_create(token, name, is_public):
     if token_check(token) == False:
         raise AccessError('Invalid Token')
 
@@ -66,4 +68,4 @@ def channels_create():
     incChannel()
     #print(data['channel_details'])
 
-    return dumps(channel_id)
+    return channel_id

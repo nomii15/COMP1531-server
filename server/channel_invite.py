@@ -7,12 +7,16 @@ from channel_check import member_check
 INVITE = Blueprint('INVITE', __name__)
 
 @INVITE.route('/channel/invite', methods=['POST'])
-def channel_invite():
-    global data
-    data = getData()
+def invite():
     token = request.form.get('token')
     channel_id = int(request.form.get('channel_id'))
     u_id = request.form.get('u_id')
+    return dumps(channel_invite(token, channel_id, u_id))
+
+def channel_invite(token, channel_id, u_id):
+    global data
+    data = getData()
+
     #exceptions
     if uid_check(int(u_id)) is not True:
         raise ValueError("invalid u_id.")
@@ -30,8 +34,7 @@ def channel_invite():
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
                     data['channels'][channel_id]['all_members'].append(ret)
-                    return dumps({
-                    })
+                    return ret
             # if get to end of this loop, user isnt valid
             raise ValueError("the authorised user is not part of the channel")
     # if here channel doesnt exist

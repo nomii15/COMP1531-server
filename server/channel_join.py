@@ -25,11 +25,12 @@ AccessError when:
 
 join = Blueprint('join', __name__)
 @join.route('/channel/join', methods=['POST'])
-
-def channel_join():
+def Join():
     token = request.form.get('token')
     channel_id = request.form.get('channel_id')
+    return dumps(channel_join(token, channel_id))
 
+def channel_join(token, channel_id):
     if token_check(token) == False:
         raise AccessError('Invalid Token')
 
@@ -64,7 +65,7 @@ def channel_join():
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
                     data['channel_details'][int(channel_id)]['all_members'].append(ret)
-                    return dumps({})
+                    return ret
             # if get to end of this loop, user isnt valid
 
     # if here channel doesnt exist                

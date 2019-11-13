@@ -9,8 +9,21 @@ from channel_check import *
 from data import *
 
 
+<<<<<<< HEAD
 
 def channel_messages(token, channel_id, start):
+=======
+channel_message = Blueprint('channel_message', __name__)
+
+@channel_message.route('/channel/messages', methods = ['GET'])
+def Messages():
+    token = request.args.get('token')
+    channel_id = int(request.args.get('channel_id'))
+    start = int(request.args.get('start'))
+    return dumps(getMessages(token, channel_id, start))
+
+def getMessages():
+>>>>>>> a2d3a5d0170f743c88dd807d3c6713e44c700135
     global data
     data = getData()
 
@@ -33,6 +46,7 @@ def channel_messages(token, channel_id, start):
         if int(channel_id) == channel['channel_id']:
             # get the messages
             # add to message return
+
             if data['channels'][channel_id]['messages'] == None:
                 return message
             
@@ -59,7 +73,10 @@ def channel_messages(token, channel_id, start):
             #        message['messages'].append(j['message'] ) 
             
 
-            print(message)              
+            for i in range(start, end):
+                message['messages'].append(data['channels'][channel_id]['messages'][i] )  
+
+            #print(message)              
             return message
 
         else:

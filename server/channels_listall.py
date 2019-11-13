@@ -14,8 +14,11 @@ Provide a list of all channels (and their associated details)
 
 Channels_listall = Blueprint('APP_listall', __name__)
 @Channels_listall.route('/channels/listall', methods=['GET'])
-def channels_listall():
+def Listall():
     token = request.args.get('token')
+    return dumps(channels_listall(token))  
+
+def channels_listall(token):
     if token_check(token) == False:
         raise AccessError('Invalid Token')
     #add channel dictionary to add to global dictionary
@@ -41,4 +44,4 @@ def channels_listall():
         del data['channel'][channel]['is_public']
         ret[channel] = data['channel'][channel]#[['name']['channel_id']] <= check how to only return these two fields 
     '''
-    return dumps(ret)
+    return ret
