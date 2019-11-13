@@ -6,22 +6,18 @@ from token_check import *
 
 SETNAME = Blueprint('SETNAME', __name__)
 
-@SETNAME.route('/user/profile/setname', methods=['PUT'])
-def user_profile_setname():
+def user_profile_setname(token, name_first, name_last):
     data = getData()
-    token = request.form.get('token')
-    new_name_first = str(request.form.get('name_first'))
-    new_name_last = str(request.form.get('name_last'))
     #check token is valid or not
     if token_check(token) is not True:
-        return dumps({
+        return {
             'error' : 'invalid token'
-        })
+        }
     #if name_first or name_last is not in the range of 1-50, raise exception
-    if len(new_name_first) < 1 or len(new_name_first) > 50:
-        raise ValueError("incorrect first name length")
-    if len(new_name_last) < 1 or len(new_name_last) > 50:
-        raise ValueError("incorrect last name length")
+    if len(name_first) < 1 or len(name_first) > 50:
+        raise ValueError(description = "incorrect first name length")
+    if len(name_last) < 1 or len(name_last) > 50:
+        raise ValueError(description = "incorrect last name length")
     #decode the token and get u_id of the authorised user
     SECRET = getSecret()
     payload = jwt.decode(token, SECRET, algorithms=['HS256'])
@@ -29,8 +25,15 @@ def user_profile_setname():
     #update the name
     for key, item in data['users'].items():
         if key == u_id:
-            item['name_first'] = new_name_first
-            item['name_last'] = new_name_last
+            item['name_first'] = name_first
+            item['name_last'] = name_last
             break
-    return dumps({
-    })
+    return {
+    }
+
+@SETNAME.route('/user/profile/setname', methods=['PUT'])   
+def user_profile_setname_route():
+    token = request.form.get('token')
+    name_first = str(request.form.get('name_first'))
+    name_last = str(request.form.get('name_last'))
+    return dumps(user_profile_setname(token, name_first, name_last))
