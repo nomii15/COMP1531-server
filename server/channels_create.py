@@ -41,7 +41,7 @@ def channels_create(token, name, is_public):
 
     channel_id = channel
 
-    data['channels'][channel] = {'channel_id': channel_id, 'name': name, 'messages': [], 'standup_active': False, 'time_finish': None}
+    data['channels'][channel] = {'channel_id': channel_id, 'name': name, 'messages': [], 'standup_active': False, 'time_finish': None, 'startup_user': None}
 
     # retrieve u_id from token
     global SECRET 
