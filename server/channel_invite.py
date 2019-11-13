@@ -7,7 +7,7 @@ from channel_check import member_check
 INVITE = Blueprint('INVITE', __name__)
 
 @INVITE.route('/channel/invite', methods=['POST'])
-def Invite()
+def invite():
     token = request.form.get('token')
     channel_id = int(request.form.get('channel_id'))
     u_id = request.form.get('u_id')
