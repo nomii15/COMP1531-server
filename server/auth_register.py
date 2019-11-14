@@ -24,15 +24,15 @@ name_last is more than 50 characters
 register = Blueprint('APP_register', __name__)
 
 @register.route('/auth/register', methods=['POST'])
-def auth_register():
-
-    
+def Register():
     email = request.form.get('email')
     password = request.form.get('password')
     name_first = request.form.get('name_first')
     name_last = request.form.get('name_last')
-
     
+    return dumps(auth_register(email, password, name_first, name_last))
+
+def auth_register(email, password, name_first, name_last):
     #check if valid email
     if email_check(email) == "Invalid Email":
         raise ValueError("Invalid Email Address")
@@ -104,4 +104,4 @@ def auth_register():
     ret['token'] = token
   
     #print(ret)
-    return dumps(ret)
+    return ret
