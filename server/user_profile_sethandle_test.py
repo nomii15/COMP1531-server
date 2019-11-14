@@ -1,57 +1,35 @@
 import pytest
 import jwt
+from auth_register import auth_register
+from user_profile import user_profile
+from user_profile_sethandle import user_profile_sethandle
+from data import *
 
-SECRET = 'COMP1531'
+SECRET = getSecret()
 
-data = {
-    'users':{
-        '001':{'email': 'abcdefg@gmail.com', 'name_first': 'Tom', 'name_last': 'Happy', 'handle': 'tomhappy'},
-        '002':{'email': 'qwerty@gmail.com', 'name_first': 'Bob', 'name_last': 'Sad', 'handle': 'bobsad'}
-    }
-}
-
-class test_handle():
-    def __init__(self, token, handle):
-        payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-        self.u_id = payload['u_id']
-        self.handle = handle
-        
-    def handle_length(self):
-        if 3 <= len(self.handle) <= 20:
-            return True
-        raise ValueError("incorrect length")
-        
-    def handle_check(self):
-        for key, item in data['users'].items():
-            if item['handle'] == self.handle:
-                raise ValueError("handle been used")
-        return True
+def test_sethandle_success():
+    auth_register('qwe123@gmail.com', 'qwe12345', 'Vincent', 'Zhang')
+    auth_register('abcdef@gmail.com', 'secret123', 'ABC', 'Happy')    
+    token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
+    user_profile_sethandle(token1, 'handle1')
+    user_profile_sethandle(token2, 'handle2')
+    user_profile_sethandle(token1, 'sup_handle')
+    assert user_profile(1, token1) == {'email': 'qwe123@gmail.com', 'name_first': 'Vincent', 'name_last': 'Zhang', 'handle_str': 'sup_handle', 'profile_img_url': None}
+    assert user_profile(2, token2) == {'email': 'abcdef@gmail.com', 'name_first': 'ABC', 'name_last': 'Happy', 'handle_str': 'handle2', 'profile_img_url': None}
     
-    def change(self):
-        data['users'][self.u_id]['handle'] = self.handle
-        
-    def new_data(self):
-        return data['users'][self.u_id]
-
-#success
-def test_1():
-    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
-    test1 = test_handle(token, 'abcdef')
-    assert test1.handle_length() == True
-    assert test1.handle_check() == True
-    test1.change()
-    assert test1.new_data() == {'email': 'abcdefg@gmail.com', 'name_first': 'Tom', 'name_last': 'Happy', 'handle': 'abcdef'}
+def test_sethandle_invalid_token():
+    token = jwt.encode({'u_id': 3}, SECRET, algorithm='HS256').decode('utf-8')
+    assert user_profile_sethandle(token, 'handlehandle') == {'error' : 'invalid token'}
     
-#incorrect length
-def test_2():
-    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
-    test2 = test_name(token, 'a')
-    with pytest.raises(ValueError, match='*incorrect length*'):
-        test2.handle_length()
-
-#handle been used
-def test_3():
-    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
-    test3 = test_name(token, 'bobsad')
-    with pytest.raises(ValueError, match='*handle been used*'):
-        test3.handle_check()
+def test_sethandle_incorrect_len(): 
+    token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
+    with pytest.raises(ValueError, match='incorrect handle length'):
+        user_profile_sethandle(token1, 'ab')
+        user_profile_sethandle(token2, 'handlehandlehandlehandlehandle')
+        
+def test_sethandle_used():
+    token = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    with pytest.raises(ValueError, match='handle has been used'):
+        user_profile_sethandle(token, 'handle2')
