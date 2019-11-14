@@ -25,6 +25,9 @@ name_last is more than 50 characters
 
 def auth_register(email, password, name_first, name_last):
     
+    return dumps(auth_register(email, password, name_first, name_last))
+
+def auth_register(email, password, name_first, name_last):
     #check if valid email
     if email_check(email) == "Invalid Email":
         raise ValueError(description = "Invalid Email Address")
