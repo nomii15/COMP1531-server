@@ -6,8 +6,9 @@ from uid_check import *
 from channel_check import *
 
 DETAILS = Blueprint('DETAILS', __name__)
+
 @DETAILS.route('/channel/details', methods=['GET'])
-def Details():
+def channel_details_route():
     token = request.args.get('token')
     channel_id = int(request.args.get('channel_id'))
     return dumps(channel_details(token, channel_id))
@@ -15,7 +16,6 @@ def Details():
 def channel_details(token, channel_id):
     global data
     data = getData()
-
     #exceptions
     if id_check(channel_id) is not True:
         raise ValueError("invalid channel id")
@@ -28,7 +28,7 @@ def channel_details(token, channel_id):
     }
     # get the names of the members
     for i, item in data['users'].items():
-        for temp in data['channel_details'][channel_id]['all_members']:
+        for temp in data['channel_details'][channel_id]['owner_members']:
             if item['u_id'] == temp['u_id']:
                 ret['owner_members'].append({'u_id': item['u_id'], 'name_first': item['name_first'], 'name_last': item['name_last'], 'profile_img_url': item['profile_img_url']})
         for hold in data['channel_details'][channel_id]['all_members']:
