@@ -1,48 +1,36 @@
 import pytest
 import jwt
+from auth_register import auth_register
+from user_profile import user_profile
+from user_profile_setmail import user_profile_setmail
+from data import *
 
-SECRET = 'COMP1531'
+SECRET = getSecret()
 
-data = {
-    'users':{
-        '001':{'email': 'abcdefg@gmail.com', 'name_first': 'Tom', 'name_last': 'Happy', 'handle': 'tomhappy'},
-        '002':{'email': 'qwerty@gmail.com', 'name_first': 'Bob', 'name_last': 'Sad', 'handle': 'bobsad'}
-    }
-}
+def test_setmail_success():
+    auth_register('qwe123@gmail.com', 'qwe12345', 'Vincent', 'Zhang')
+    auth_register('abcdef@gmail.com', 'secret123', 'ABC', 'Happy')    
+    token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
+    user_profile_setmail(token1, 'qwert123@gmail.com')
+    user_profile_setmail(token2, 'qwertyuiop@gmail.com')
+    assert user_profile(1,token1,) == {'email': 'qwert123@gmail.com', 'name_first': 'Vincent', 'name_last': 'Zhang', 'handle_str': 'vincentzhang1', 'profile_img_url': None}
+    assert user_profile(2,token1,) == {'email': 'qwertyuiop@gmail.com', 'name_first': 'ABC', 'name_last': 'Happy', 'handle_str': 'abchappy2', 'profile_img_url': None}
 
-class test_mail():
-    def __init__(self, token, email):
-        payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-        self.u_id = payload['u_id']
-        self.email = email
-        
-    def email_check(self):
-        return True
-        
-    def email_beenused(self):
-        for key, item in data['users'].items():
-            if item['email'] == self.email:
-                raise ValueError("email been used")
-        return True
+def test_setmail_invalid_token():
+    token = jwt.encode({'u_id': 3}, SECRET, algorithm='HS256').decode('utf-8')
+    assert user_profile_setmail(token, 'abc@gmail.com') == {'error' : 'invalid token'}
     
-    def change(self):
-        data['users'][self.u_id]['email'] = self.email
+def test_setmail_invalid_email():
+    token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
+    with pytest.raises(ValueError, match='Invalid email address'):
+        user_profile_setmail(token1, 'qwert123')
+        user_profile_setmail(token2, 'qwertyuiop@.com')
         
-    def new_data(self):
-        return data['users'][self.u_id]
-
-#success
-def test_1():
-    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
-    test1 = test_mail(token, 'abcdef@gmail.com')
-    assert test1.email_check() == True
-    assert test1.email_beenused() == True
-    test1.change()
-    assert test1.new_data() == {'email': 'abcdef@gmail.com', 'name_first': 'Tom', 'name_last': 'Happy', 'handle': 'tomhappy'}
-    
-#email has been used
-def test_2():
-    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
-    test2 = test_mail(token, 'qwerty@gmail.com')
-    with pytest.raises(ValueError, match='*email been used*'):
-        test2.email_beenused()
+def test_setmail_used():
+    token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
+    with pytest.raises(ValueError, match='email address has been used'):
+        user_profile_setmail(token1, 'qwert123@gmail.com')
+        
