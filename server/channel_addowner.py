@@ -14,19 +14,15 @@ from flask import Flask, request, Blueprint
 from json import dumps
 import jwt
 from Error import *
+from token_check import token_check
+from channel_check import member_check, id_check
 
 # importing the data file
 from data import *
 
 addowner = Blueprint('addowner', __name__)
-<<<<<<< HEAD
 @addowner.route('/channel/addowner')
 def Addowner():
-=======
-@addowner.route('/channel/addowner', method=['GET'])
-def channel_addowner():
-    
->>>>>>> ba01d2dbdc9a112ceec5ba6f568affffcbf8ddc5
     token = request.form.get('token')
     channel_id = request.form.get('channel_id')
     u_id = request.form.get('u_id')
@@ -37,12 +33,14 @@ def channel_addowner(token, channel_id, u_id):
         raise AccessError('Invalid Token')
 
      #exceptions
+     
+    if id_check(int(channel_id)):
+        raise ValueError("Channel_id does not refer to a valid channel that the authorised user is part of.")
+
     if member_check(token, channel_id) == False:
         raise AccessError("Inviter is not a member of the given channel.")
         
 
-    if id_check(int(channel_id)):
-        raise ValueError("Channel_id does not refer to a valid channel that the authorised user is part of.")
 
         
     if uid_check(int(u_id)) == False:
