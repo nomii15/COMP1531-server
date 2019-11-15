@@ -13,6 +13,7 @@ import jwt
 from datetime import datetime
 from Error import AccessError
 from token_check import token_check
+from message_remove import message_remove
 
 
 def message_edit(token, message_id, message):
@@ -82,7 +83,10 @@ def message_edit(token, message_id, message):
                 print(message)
                 if message['message_id'] == int(message_id):
                     print('found message and the message editer is the owner of the channel')
-                    message['message'] = message
+                    if message == '':
+                        message_remove(token, int(message_id))
+                    else:
+                        message['message'] = message
                     return dumps({})
 
     #you would only get down to this logic if you did not create message and are not an owner
@@ -102,26 +106,3 @@ def route():
     token = request.form.get('token')
     
     return dumps(message_edit(token, message_id, message))
-
-'''
-for i, item in data['channel_details'].items():
-    print(item)
-    print(i)
-    for dic in item['owner_members']:
-    print("======")
-    print(dic)
-    if dic['u_id'] == u_id:
-        print("part of the channel")
-        #user is part of that channel, check the channel to find the message with the corresponding message id
-        for j, items in data['channels'].items():
-            print(items)
-            print(j)
-            if items['channel_id']==i:
-                print("found channel, find message")
-                for it in items['messages']:
-                    print(it)
-                    if it['message_id'] == int(message_id):
-                        print("found message, modifying it")
-                        it['message'] = message
-                        return dumps({})    
-'''
