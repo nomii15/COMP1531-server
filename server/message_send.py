@@ -55,13 +55,14 @@ def message_send(token, channel_id, message):
 
     global Message
     Message = getMessage()
-
+    print('just ran getmessage. messageID = ')
+    print(Message)
     now = datetime.now()
     timestamp = now.replace(tzinfo=timezone.utc).timestamp()
     currentTime = timestamp
     #currentTime = now.strftime("%H:%M:%S")
     reacts = [{
-        'react_id': Message,
+        'react_id': 1,
         'u_ids': [],
         'is_this_user_reacted': False
     }]
@@ -89,13 +90,12 @@ def message_send(token, channel_id, message):
         if j['channel_id'] == int(channel_id):
             data['channels'][d]['messages'].append(new_message)
             ret = {'message_id': Message}
+            incMessage()
+            print('just ran incMessage. messageID = ')
             return dumps({'message_id': Message})
             
 
-        
-    ret = {'message_id': Message}
-    incMessage()    
-    return dumps(ret)
+    
 
 
 send = Blueprint('send', __name__)
