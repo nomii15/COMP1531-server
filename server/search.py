@@ -10,11 +10,14 @@ search = Blueprint('search', __name__)
 
 
 @search.route('/search', methods=['GET'])
-def search():
-    ret = {'messages': []}
-
+def Search():
     token = request.args.get('token')
     query_str = request.args.get('query_str')
+
+    return dumps(search(token, query_str))
+
+def search():
+    ret = {'messages': []}
 
     if token_check(token) == False:
         raise ValueError("Invalid token")
@@ -37,5 +40,5 @@ def search():
                 if query_str in items['messages']:
                     ret['messages'].append(items['messages'])
 
-    return dumps(ret)            
+    return ret            
 
