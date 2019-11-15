@@ -14,7 +14,7 @@ from datetime import datetime
 from Error import AccessError
 from token_check import token_check
 from message_remove import message_remove
-
+from token_to_uid import token_to_uid
 
 def message_edit(token, message_id, message):
 
@@ -25,12 +25,12 @@ def message_edit(token, message_id, message):
             "message" : "Your idToken is invalid",
         }
         return dumps(ret)
-    
+    u_id = token_to_uid(token)
     # retrieve u_id from token
-    global SECRET 
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']    
+    #global SECRET 
+    #SECRET = getSecret()
+    #token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    #u_id = token_payload['u_id']    
     
     global data
     data = getData()

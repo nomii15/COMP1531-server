@@ -15,7 +15,7 @@ from Error import AccessError
 from token_check import token_check
 from check_channel_owner import channel_owner
 import jwt
-
+from token_to_uid import token_to_uid
 
 def message_unpin(token, message_id):
     if token_check(token) == False:
@@ -30,18 +30,18 @@ def message_unpin(token, message_id):
     data = getData()
 
     # retrieve u_id from token
-    global SECRET 
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    uid = token_payload['u_id']
-
+    #global SECRET 
+    #SECRET = getSecret()
+    #token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    #uid = token_payload['u_id']
+    u_id = token_to_uid(token)
     # find the message and modify the pin operation
     for i, items in data['channels'].items():
         print(i)
         for item in items['messages']:
             if item['message_id']==int(message_id):
                 print("got message id")
-                if channel_owner(items['name'], uid) == True:
+                if channel_owner(items['name'], u_id) == True:
                     if item['is_pinned']==True:
                         item['is_pinned']=False
                         print(item)

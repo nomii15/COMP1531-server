@@ -15,7 +15,7 @@ from Error import AccessError
 from token_check import token_check
 from check_channel_owner import channel_owner
 import jwt
-
+from token_to_uid import token_to_uid
 
 def message_pin(token, message_id):
     if token_check(token) == False:
@@ -28,12 +28,12 @@ def message_pin(token, message_id):
     
     global data
     data = getData()
-
+    uid = token_to_uid(token)
     # retrieve u_id from token
-    global SECRET 
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    uid = token_payload['u_id']
+    #global SECRET 
+    #SECRET = getSecret()
+    #token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    #uid = token_payload['u_id']
 
     #message_channel_name = 'empty'
     #message_channel_id = -1

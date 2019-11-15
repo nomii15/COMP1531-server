@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from Error import AccessError
 from token_check import token_check
 from channel_check import id_check
+from token_to_uid import token_to_uid
 
 #APP = Flask(__name__)
 #send = Blueprint('send', __name__)
@@ -69,12 +70,13 @@ def message_send(token, channel_id, message):
     is_pinned = False
     #message_id = Message
 
-    global SECRET
-    SECRET = getSecret()
+    #global SECRET
+    #SECRET = getSecret()
     
     #extract u_id from token
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = int(token_payload['u_id'])
+    u_id = token_to_uid(token)
+    #token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    #u_id = int(token_payload['u_id'])
     #print(u_id)
     
     new_message = {

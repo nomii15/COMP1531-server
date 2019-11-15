@@ -13,6 +13,7 @@ from data import *
 from Error import AccessError
 from token_check import token_check
 import jwt
+from token_to_uid import token_to_uid
 
 
 def message_react(token, message_id, react_id):
@@ -40,10 +41,12 @@ def message_react(token, message_id, react_id):
     data = getData()
 
     # retrieve u_id from token
-    global SECRET 
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
+    u_id = token_to_uid(token)
+
+    #global SECRET 
+    #SECRET = getSecret()
+   #token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    #u_id = token_payload['u_id']
 
     # get message
     for i,items in data['channels'].items():

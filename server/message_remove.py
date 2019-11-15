@@ -15,7 +15,7 @@ import jwt
 from Error import AccessError
 from token_check import token_check
 from check_channel_owner import channel_owner
-
+from token_to_uid import token_to_uid
 
 def message_remove(token, message_id):
 
@@ -28,11 +28,11 @@ def message_remove(token, message_id):
         return dumps(ret)
 
     # retrieve u_id from token
-    global SECRET 
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']    
-
+    #global SECRET 
+    #SECRET = getSecret()
+    #token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
+    #u_id = token_payload['u_id']    
+    u_id = token_to_uid(token)
     # go find the channel and the message that corresponds to it
     for i,items in data['channels'].items():
         print(items)
