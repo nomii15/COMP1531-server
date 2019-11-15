@@ -62,7 +62,7 @@ def message_send(token, channel_id, message):
     currentTime = timestamp
     #currentTime = now.strftime("%H:%M:%S")
     reacts = [{
-        'react_id': Message,
+        'react_id': 1,
         'u_ids': [],
         'is_this_user_reacted': False
     }]
