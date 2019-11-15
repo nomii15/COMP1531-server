@@ -25,19 +25,11 @@ def message_remove(token, message_id):
             "name": "AccessError",
             "message" : "Your idToken is invalid",
         }
-        return dumps(ret)
-
-    # retrieve u_id from token
-    #global SECRET 
-    #SECRET = getSecret()
-    #token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    #u_id = token_payload['u_id']    
+        return dumps(ret)  
     u_id = token_to_uid(token)
     # go find the channel and the message that corresponds to it
     for i,items in data['channels'].items():
-        print(items)
         for item in items['messages']:
-            print(item)
             if item['message_id'] == int(message_id):
                 if channel_owner(items['name'], u_id) == True or item['uid'] == u_id:
                     data['channels'][i]['messages'].remove(item)
