@@ -4,18 +4,17 @@ from flask_cors import CORS
 from flask import Flask, request, jsonify, send_from_directory
 from json import dumps
 from werkzeug.exceptions import HTTPException
-from flask_mail import Mail, Message
-
 
 # if running on your computer, change path
 sys.path.insert(1,'/tmp_amd/cage/export/cage/3/z5110036/comp1531/project/W15A-DJMN/server/')
+#sys.path.insert(1,'/import/adams/3/z5168908/cs1531/W15A-DJMN/server')
 from auth_login import login
 from auth_logout import logout
 from auth_register import register
 from auth_passwordreset_request import requestR
 from auth_passwordreset_reset import reset
 from channel_messages import channel_message
-from search import Search
+from search import Search_route
 from channels_create import Channels_create
 from channels_list import Channels_list
 from channels_listall import Channels_listall
@@ -34,6 +33,7 @@ from message_react import react
 from message_unreact import unreact
 from message_pin import pin
 from message_unpin import unpin
+from message_sendlater import sendlater
 from users_all import Uall
 from user_profiles_uploadphoto import uploadphoto
 from standup_active import active
@@ -75,7 +75,7 @@ APP.register_blueprint(logout)
 APP.register_blueprint(requestR)
 APP.register_blueprint(reset)
 APP.register_blueprint(channel_message)
-APP.register_blueprint(Search)
+APP.register_blueprint(Search_route)
 APP.register_blueprint(Channels_create)
 APP.register_blueprint(Channels_list)
 APP.register_blueprint(Channels_listall)
@@ -99,16 +99,8 @@ APP.register_blueprint(uploadphoto)
 APP.register_blueprint(active)
 APP.register_blueprint(standsend)
 APP.register_blueprint(start)
-'''
-mail = Mail(APP) 
-APP.config.update(
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=465,
-    MAIL_USE_SSL=True,
-    MAIL_USERNAME = 'DJMN1531@gmail.com',
-    MAIL_PASSWORD = "password1531"  
-                )
-'''
+APP.register_blueprint(sendlater)
+
 
 '''
 @APP.route('/auth/register', methods=['POST'])
