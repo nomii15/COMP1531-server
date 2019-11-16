@@ -14,12 +14,11 @@ from data import *
 import jwt
 from Error import AccessError
 from token_check import token_check
-
+from token_to_uid import token_to_uid
 
 def message_unreact(token, message_id, react_id):
     
     if int(react_id) != 1:
-        print('invalid react id')
         ret = {
             "code" : 400,
             "name": "ValueError",
@@ -28,7 +27,6 @@ def message_unreact(token, message_id, react_id):
         return dumps(ret)
 
     if token_check(token) == False:
-        print('invalid token id')
         ret = {
             "code" : 400,
             "name": "AccessError",
@@ -39,11 +37,7 @@ def message_unreact(token, message_id, react_id):
     global data
     data = getData()
 
-    global SECRET 
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
-
+    u_id = token_to_uid(token)
     for i, items in data['channels'].items():
         for item in items['messages']:
             if item['message_id']==int(message_id):

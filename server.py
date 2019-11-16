@@ -8,7 +8,7 @@ from flask_mail import Mail, Message
 
 
 # if running on your computer, change path
-sys.path.insert(1,'/tmp_amd/cage/export/cage/3/z5110036/comp1531/project/W15A-DJMN/server/')
+sys.path.insert(1,'/import/adams/3/z5168908/cs1531/W15A-DJMN/server')
 from auth_login import login
 from auth_logout import logout
 from auth_register import register
@@ -75,7 +75,7 @@ APP.register_blueprint(logout)
 APP.register_blueprint(requestR)
 APP.register_blueprint(reset)
 APP.register_blueprint(channel_message)
-APP.register_blueprint(Search)
+#APP.register_blueprint(Search)
 APP.register_blueprint(Channels_create)
 APP.register_blueprint(Channels_list)
 APP.register_blueprint(Channels_listall)

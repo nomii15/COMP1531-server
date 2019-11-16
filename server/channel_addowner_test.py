@@ -2,6 +2,7 @@ import pytest
 from channel_addowner import channel_addowner
 from auth_register import auth_register
 from channels_create import channels_create
+from data import *
 
 '''
 Make user with user id u_id an owner of this channel
@@ -17,7 +18,7 @@ AccessError when:
 
 def test_value_error_channel():
     #setup
-    register1 = auth_register("hello@gmail.com","abc","hi","hello")
+    register1 = auth_register("hello@gmail.com","abcde","hi","hello")
     token1 = register1['token']
     u_id1 = register1['u_id']
 
@@ -27,7 +28,7 @@ def test_value_error_channel():
 
 def test_value_error_owner():
     #setup
-    register1 = auth_register("hello@gmail.com","abc","hi","hello")
+    register1 = auth_register("hello@gmail.com","abcde","hi","hello")
     token1 = register1['token']
     u_id1 = register1['u_id']
 
@@ -39,15 +40,15 @@ def test_value_error_owner():
 
 def test_access_error():
     #setup
-    register1 = auth_register("hello@gmail.com","abc","hi","hello")
+    register1 = auth_register("hello@gmail.com","abcde","hi","hello")
     token1 = register1['token']
     u_id1 = register1['u_id']
 
-    register2 = auth_register("helloo@gmail.com","abcd","hihi","helloo")
+    register2 = auth_register("helloo@gmail.com","abcdef","hihi","helloo")
     token2 = register2['token']
     u_id2 = register2['u_id']
 
-    register3 = auth_register("hellooo@gmail.com","abcde","hihihi","hellooo")
+    register3 = auth_register("hellooo@gmail.com","abcdefg","hihihi","hellooo")
     token3 = register3['token']
     u_id3 = register3['u_id']
 

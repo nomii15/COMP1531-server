@@ -24,10 +24,6 @@ name_last is more than 50 characters
 
 
 def auth_register(email, password, name_first, name_last):
-    
-    return dumps(auth_register(email, password, name_first, name_last))
-
-def auth_register(email, password, name_first, name_last):
     #check if valid email
     if email_check(email) == "Invalid Email":
         raise ValueError(description = "Invalid Email Address")
@@ -60,13 +56,13 @@ def auth_register(email, password, name_first, name_last):
     global user
     user = getUsers()
 
-
+    # call the function to generate handle
     handle = name_first.lower() + name_last.lower()
     handle = ''.join(handle)
 
-    # if the u_id is greater than 20 character, reduce
-    if len(handle)>17:
-        handle = handle[0:17]
+    # if the u_id is greater than 15 character, reduce
+    if len(handle)>15:
+        handle = handle[0:14]
 
     # also add number to reduce handle conflicts
     handle = handle + str(user)
@@ -75,31 +71,19 @@ def auth_register(email, password, name_first, name_last):
     if len(handle) > 20:
         handle = handle[0:19]
 
-    u_id = int(user)
 
+    u_id = int(user)
+    # fill in details and store in the data structure
     data['users'][user] = {'email': email, 'password': hashlib.sha256(password.encode()), 'name_first': name_first,
      'name_last': name_last, 'u_id': u_id, 'loggedin': True, 'handle': handle, 'profile_img_url': None}
     incUser()
+  
 
-    #think about implementing a variable for u_id within data
-    #currently, two names may clash
-
-    # return a dictionary of u_id and token
-    #ret = {}
-
-   
-
+    # generate token
     global SECRET
     SECRET = getSecret()
-
-    #ret['u_id'] = u_id
     token = jwt.encode({'u_id':u_id}, SECRET, algorithm='HS256').decode('utf-8')
-    #ret  = dict()
-    #ret['u_id'] = u_id
-    #ret['token'] = token
-    #ret = {'token':token, 'u_id': u_id}   
     
-    #print(ret)
     return {
         'u_id': u_id,
         'token': token
