@@ -19,15 +19,11 @@ from datetime import datetime
 from channels_listall import channels_listall
 from channels_list import channels_list
 from message_send import message_send
-import time
 
 
 def message_sendlater(token, channel_id, message, time_sent):
-    print(channel_id)
-    print(message)
-    print(time_sent)
+
     if token_check(token) == False:
-        print('in token check')
         ret = {
             "code" : 400,
             "name": "AccessError",
@@ -35,38 +31,33 @@ def message_sendlater(token, channel_id, message, time_sent):
         }
         return dumps(ret)
 
-    global data
-    data = getData()
-    channel_exists = False
-    for i, items in data['channels'].items():
-        print(i)
-        print(items)
-        if i == int(channel_id):
-            channel_exists = True
-
-    if channel_exists == False:
-        print('in channelid check')
+    allChannels = channels_listall(token)
+    if channel_id not in allChannels:
         ret = {
-        "code" : 400,
-        "name": "ValueError",
-        "message" : "Could not find a channel with the specified Id",
+            "code" : 400,
+            "name": "ValueError",
+            "message" : "Could not find a channel with the specified Id",
         }
-        return dumps(ret) 
+        return dumps(ret)
 
+    subscribedChannels = channels_list(token)
+    if channel_id not in subscribedChannels:
+        ret = {
+            "code" : 400,
+            "name": "AccessError",
+            "message" : "You are not apart of the channel you are trying to post to",
+        }
+        return dumps(ret)
+        
     if len(message) > 1000:
-        print('in len check')
         ret = {
             "code" : 400,
             "name": "ValueError",
             "message" : "The message sent was too long",
         }
         return dumps(ret)
-        
-    print(time_sent)
-    now = datetime.now()
-    print(datetime.timestamp(now))
-    if int(time_sent) < int(datetime.timestamp(now)):
-        print('in time check')
+    
+    if time_sent < datetime.now().time():
         ret = {
             "code" : 400,
             "name": "ValueError",
@@ -74,22 +65,22 @@ def message_sendlater(token, channel_id, message, time_sent):
         }
         return dumps(ret)
 
-    
+    global data
+    data = getData()
 
-    timeout = int(time_sent) - int(datetime.timestamp(now))
-    while int(datetime.timestamp(now)) != time_sent:
-        print('in the while loop')
-        time.sleep(timeout)
-        print('woke up from sleep')
-        message_id = message_send(token, channel_id, message)
-        print(f'message id  is = {message_id}')
-        return dumps(message_id)
-        
-    
+    now = datetime.now()
+    currentTime = now.strftime("%H:%M:%S")
+
+    while currentTime != time_sent:
+        pass
+
+    message_id = message_send(token, channel_id, message)
+
+    return dumps(message_id)
 
 
-sendlater = Blueprint('/sendlater', __name__)
-@sendlater.route('/message/sendlater', methods = ['POST'])
+sendlater = Blueprint('APP_sendlater', __name__)
+@sendlater.route('message/sendlater', methods = ['POST'])
 def route():
     token = request.form.get('token')
     channel_id = request.form.get('channel_id')

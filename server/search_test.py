@@ -1,12 +1,18 @@
-from search import Search_function
-from auth_register import auth_register
-from channels_create import channels_create
-from message_send import message_send
-from data import *
-
+from search import search
+from auth_register_test import testRegister
 import pytest
 
-#valid case where the user send a message and it checks to see if the messge is there
+class search():
+    def __init__(self,query,token):
+        self.query = query
+        self.token = token
+    def tokencheck(self, token):
+        if self.token != token:
+            raise ValueError("Invalid token")
+    def messagetest(self):
+        if len(self.query) > 1000:
+            raise ValueError("Message too long")                    
+    '''
 def test_search1():
     
     #generate a test login
@@ -14,47 +20,42 @@ def test_search1():
     
     #get the token
     token = register['token']
-    u_id = register['u_id']
-
-    #send a message in a channel that the user is in
-    channel_id = channels_create(token, "this channel", True)
-    message_id = message_send(token, channel_id, "Hello")
-
     query = "Hello"
     #this should return a collection of message that 
     #contain or partially the string "Hello"
-    messages = Search_function(token, query)
-
+    dictionary{} = search(token, query)
+    
     #test to see if the query string used found messages in channels
     #even if the message is a prefix of the query string
-    for i in messages['messages']:
-        assert i['message'] == "Hello"
+    
+    assert query.startswith(query, 0,len(query)) in dictionary.items()
+    '''
     
 #invalid token    
 def test_search2():
 
-    # using the setup in test1, if a users attamps to search without a valid token
-    # throw exception, querty = Hello
-    falseToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1X2lkIjoyfQ.2QcZ_q4JJoHF-NQC1qWnsEcuPElVzN8T44LQgr-UyNo'
+    #generate a test login
+    register = testRegister("z5110036@unsw.edu.au", "1234567", "John", "Smith")
+    test = search("hello there", 1)
+    #get the token
+    out = register.valid()
+    
+    #assume token != "#72"
+    #this should fail as the token passed is not a valid token
     with pytest.raises(ValueError, match = '*Invalid Token*'):
-        Search_function(falseToken, "Hello")
-        
+        test.tokencheck(2)
         
         
 #search for a message > 1000 characters  
 def test_search3():
 
-    #using the setup from the first test, 
-    # attempt to search for a message that is greater than 1000 characters
-    message = "A"*1001
-
     #generate a test login
-    register = auth_register("z5110066@unsw.edu.au", "1234567", "John", "Smith")
-    
+    register = testRegister("z5110036@unsw.edu.au", "1234567", "John", "Smith")
+    message = 'S'*1001
+    test = search(message, 1)
     #get the token
-    token = register['token']
-    u_id = register['u_id']
+    out = register.valid()
     
     #this should fail as the message being looked for is > 1000 characters
     with pytest.raises(ValueError, match = '*Invalid Message Length*'):
-        Search_function(token, message)           
+        test.messagetest()            
