@@ -20,7 +20,7 @@ def message_send(token, channel_id, message):
         ret = {
             "code" : 400,
             "name": "ValueError",
-            "message" : "The message sent was too long",
+            "message" : "Message too long",
         }
         return dumps(ret)
 
