@@ -6,12 +6,9 @@ from json import dumps
 from werkzeug.exceptions import HTTPException
 
 # if running on your computer, change path
-<<<<<<< HEAD
-sys.path.insert(1,'/tmp_amd/cage/export/cage/3/z5110036/comp1531/project/W15A-DJMN/server/')
-#sys.path.insert(1,'/import/adams/3/z5168908/cs1531/W15A-DJMN/server')
-=======
+#sys.path.insert(1,'/tmp_amd/cage/export/cage/3/z5110036/comp1531/project/W15A-DJMN/server/')
 sys.path.insert(1,'/import/adams/3/z5168908/cs1531/W15A-DJMN/server')
->>>>>>> 9731c1b9156a24292b9b887c8105eab3c7a3f403
+
 from auth_login import login
 from auth_logout import logout
 from auth_register import register
@@ -43,17 +40,7 @@ from user_profiles_uploadphoto import uploadphoto
 from standup_active import active
 from standup_start import start
 from standup_send import standsend
-'''
-def defaultHandler(err):
-    response = err.get_response()
-    response.data = dumps({
-        "code": err.code,
-        "name": "System Error",
-        "message": err.description,
-    })
-    response.content_type = 'application/json'
-    return response
-'''
+
 
 def defaultHandler(err):
     response = err.get_response()
@@ -79,11 +66,7 @@ APP.register_blueprint(logout)
 APP.register_blueprint(requestR)
 APP.register_blueprint(reset)
 APP.register_blueprint(channel_message)
-<<<<<<< HEAD
 APP.register_blueprint(Search_route)
-=======
-#APP.register_blueprint(Search)
->>>>>>> 9731c1b9156a24292b9b887c8105eab3c7a3f403
 APP.register_blueprint(Channels_create)
 APP.register_blueprint(Channels_list)
 APP.register_blueprint(Channels_listall)
