@@ -43,4 +43,3 @@ def Search_flask_route():
     token = request.args.get('token')
     query_str = str(request.args.get('query_str'))
     return dumps( Search_function(token, query_str) )
-
