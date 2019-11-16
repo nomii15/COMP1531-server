@@ -14,7 +14,7 @@ ValueError when:
 reset_code is not a valid reset code
 Password entered is not a valid password
 '''
-def auth_passwordreset_reset():
+def auth_passwordreset_reset(reset_code,new_password):
 
     #check new password to see if its valie    
     if len(new_password) < 5 or len(new_password) == 0:
@@ -27,14 +27,14 @@ def auth_passwordreset_reset():
     global data
     data = getData()
 
-    for i, j in reset.items():
+    for j in reset['codes']:
         #print(j)
         if j['code'] == reset_code:
             # find the user for that reset code
-            for id, item in data['users'].items():
+            for i, item in data['users'].items():
                 if item['u_id'] == j['u_id']:
                     item['password'] = hashlib.sha256(new_password.encode())
-                    del(j)
+                    reset['codes'].remove(j)
                     return {}
 
     raise ValueError(description = "Incorrect Reset Code")
