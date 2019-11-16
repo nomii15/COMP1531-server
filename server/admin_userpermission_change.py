@@ -18,7 +18,7 @@ from uid_check import uid_check
 from data import *
 from token_check import token_check
 from token_to_uid import token_to_uid
-from Error import AccessError
+
 
 
 def admin_userpermission_change(token, u_id, permission_id):
@@ -27,7 +27,7 @@ def admin_userpermission_change(token, u_id, permission_id):
         raise ValueError(description = "not a valid permission")
 
     if token_check(token)==False:
-        raise AccessError("Invalid Token")
+        raise AccessError(description = "Invalid Token")
 
     u_idAdmin = token_to_uid(token)
 
@@ -42,7 +42,7 @@ def admin_userpermission_change(token, u_id, permission_id):
         if u_idAdmin == item['u_id']:
             #if there permission is 3, they dont have the ability to promote a user
             if item['permission'] == 3:
-                raise AccessError("User trying to change permission is not a admin or owner or slackr")
+                raise AccessError(description = "User trying to change permission is not a admin or owner or slackr")
             else:
                 # permision is one or two, meaning they are either a admin or a owner of slackr
                 break    
@@ -67,7 +67,8 @@ def admin_userpermission_change(token, u_id, permission_id):
                 #need to go through each channel and add admin and owner users as owners of every channel
                 for k, chan in data['channel_details'].items():
                     if items['u_id'] in chan['all_members']:
-                        chan['owner_members'].append(user)    
+                        if items['u_id'] not in chan['owner_members']:
+                            chan['owner_members'].append(user)    
             else:
                 #downgrade from one level to another
                 #only need to remove owner from channel if they are going from admin on general member
