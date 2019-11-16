@@ -73,9 +73,13 @@ def auth_register(email, password, name_first, name_last):
 
 
     u_id = int(user)
+
     # fill in details and store in the data structure
     data['users'][user] = {'email': email, 'password': hashlib.sha256(password.encode()), 'name_first': name_first,
-     'name_last': name_last, 'u_id': u_id, 'loggedin': True, 'handle': handle, 'profile_img_url': None}
+     'name_last': name_last, 'u_id': u_id, 'loggedin': True, 'handle': handle, 'profile_img_url': None, 'permission': 3}
+    if u_id == 1:
+        # if the user being created is the first user, they are instantly an owner of the slackr
+        data['users'][user]['permission'] = 1    
     incUser()
   
 

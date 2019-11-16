@@ -17,54 +17,86 @@ from uid_check import uid_check
 # importing the data file
 from data import *
 from token_check import token_check
-from Error import *
+from token_to_uid import token_to_uid
+from Error import AccessError
 
-adminChange = Blueprint('adminChange', __name__) 
 
-@adminChange.route('admin/userpermission/change', methods=['POST'])
-def admin_userpermission_change():
-    
-    token = request.form.get('token')
-    u_id = request.form.get('u_id')
-    permission_id = request.form.get('permission_id')
+def admin_userpermission_change(token, u_id, permission_id):
 
-    if permission_id not in range(1,3):
-        raise ValueError("not a valid permission")
+    if permission_id > 3 or permission_id < 1:
+        raise ValueError(description = "not a valid permission")
 
     if token_check(token)==False:
         raise AccessError("Invalid Token")
 
-    global SECRET
-    SECRET = getSecret()
-    Payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_idAdmin = Payload['u_id']
+    u_idAdmin = token_to_uid(token)
 
-    if uid_check(u_id) == False:
-        raise ValueError("Invalid u_id")
+    if uid_check(u_idAdmin) == False:
+        raise ValueError(description = "Invalid u_id")
 
     global data
     data = getData()    
 
-    if u_id not in data['channel_details']:
-        raise AccessError("member not in channel")
+    # check if the admin is actually a admin or owner
+    for j, item in data['users'].items():
+        if u_idAdmin == item['u_id']:
+            #if there permission is 3, they dont have the ability to promote a user
+            if item['permission'] == 3:
+                raise AccessError("User trying to change permission is not a admin or owner or slackr")
+            else:
+                # permision is one or two, meaning they are either a admin or a owner of slackr
+                break    
 
     # get the channel associated with the token
     # need to check as only types of members are owners and others
-    for i,items in data['channel_details'].items():
-        if u_idAdmin == items['owner_members']:
+    for i,items in data['users'].items():
+        if u_id == items['u_id']:
             
-            # modify the uid to change state of the user
-            if permission_id == 1:
-                # general member
-                if u_id in items['owner_members']:
-                    del(items['owner_member'])
-            elif permission_id == 2:
-                # owner
-                items['owner_members'] = u_id
+            #check to see which type the user is, if its the same, dont do anything
+            if permission_id == items['permission']:
+                return {}
+                
+            if permission_id < items['permission']:
+                # meaning the permission of the user is increasing (admin to owner or general to admin)
+                if permission_id == 2:
+                    items['permission'] = 2
+                if permission_id == 1:
+                    items['permission'] = 1
+                
+                user = {'u_id': items['u_id'], 'name_first': items['name_first'], 'name_last': items['name_last']}
+                #need to go through each channel and add admin and owner users as owners of every channel
+                for k, chan in data['channel_details'].items():
+                    if items['u_id'] in chan['all_members']:
+                        chan['owner_members'].append(user)    
+            else:
+                #downgrade from one level to another
+                #only need to remove owner from channel if they are going from admin on general member
+                #also need to check if they user created the channel
+                user = {'u_id': items['u_id'], 'name_first': items['name_first'], 'name_last': items['name_last']}
+                if permission_id == 3:
+                    for l, check in data['channel_details'].items():
+                        if check['creator'] == u_id:
+                            #if they created the channel, dont remove there status as owner of that channel
+                            continue
+                        if u_id in check['owner_member']:
+                            check['owner_member'].remove(user)
+                items['permission'] = permission_id
+
+    return {}           
 
 
-    raise AccessError("not a admin of the channel")            
 
+
+
+adminChange = Blueprint('adminChange', __name__) 
+
+@adminChange.route('/admin/userpermission/change', methods=['POST'])
+def admin_route():
+    token = request.form.get('token')
+    u_id = int(request.form.get('u_id'))
+    permission_id = int(request.form.get('permission_id'))
+    #print(permission_id)
+    return dumps( admin_userpermission_change(token, u_id, permission_id) )
 
 
 
