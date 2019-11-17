@@ -48,6 +48,8 @@ def test_value_error():
         channel_join(token3,1)
 
 def test_access_error():
+    global data
+    data = getData()
     #setup
     register4 = auth_register("validemail4@gmail.com", "validpassword4", "USER4", "validname4")
     token4 = register4['token']
