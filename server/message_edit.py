@@ -16,6 +16,15 @@ from token_check import token_check
 from message_remove import message_remove
 from token_to_uid import token_to_uid
 
+edit = Blueprint('edit', __name__)
+@edit.route('/message/edit', methods = ['PUT'])
+def route():
+    message = request.form.get('message')
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+    
+    return dumps(message_edit(token, message_id, message))
+
 def message_edit(token, message_id, message):
 
     if token_check(token) == False:
@@ -31,7 +40,6 @@ def message_edit(token, message_id, message):
     global data
     data = getData()
     
-    message_channel_id = -1
     message_channel_name = 'empty'
     is_owner = False
 
@@ -40,7 +48,6 @@ def message_edit(token, message_id, message):
     for i, item in data['channels'].items():
         for currMessage in item['messages']:
             if currMessage['message_id'] == int(message_id):
-                message_channel_id = i
                 message_channel_name = item['name']
                 if currMessage['u_id'] == u_id:
                     currMessage['message'] = message
@@ -72,13 +79,3 @@ def message_edit(token, message_id, message):
         "message" : "You are not the creator of the message or owner of the channel",
         }
     return dumps(ret)
-
-
-edit = Blueprint('edit', __name__)
-@edit.route('/message/edit', methods = ['PUT'])
-def route():
-    message = request.form.get('message')
-    message_id = request.form.get('message_id')
-    token = request.form.get('token')
-    
-    return dumps(message_edit(token, message_id, message))
