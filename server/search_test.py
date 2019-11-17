@@ -4,6 +4,9 @@ from channels_create import channels_create
 from message_send import message_send
 from data import *
 
+from hypothesis import given, example
+from hypothesis.strategies import text
+
 import pytest
 
 #valid case where the user send a message and it checks to see if the messge is there
@@ -18,7 +21,7 @@ def test_search1():
 
     #send a message in a channel that the user is in
     channel_id = channels_create(token, "this channel", True)
-    message_id = message_send(token, channel_id, "Hello")
+    message_id = message_send(token, channel_id['channel_id'], "Hello")
 
     query = "Hello"
     #this should return a collection of message that 
@@ -57,4 +60,21 @@ def test_search3():
     
     #this should fail as the message being looked for is > 1000 characters
     with pytest.raises(ValueError, match = '*Invalid Message Length*'):
-        Search_function(token, message)           
+        Search_function(token, message)
+
+# if generating a random string and search for it, it shouldnt be there
+@given(text())
+def test_search_auto(string):
+    #generate a token
+    global SECRET
+    SECRET = getSecret()
+    token = jwt.encode({'u_id':1}, SECRET, algorithm='HS256').decode('utf-8')
+
+    return_message = Search_function(token, string)
+    i = False
+    for j, item in return_message.items():
+        if item['message'] == string:
+            i = True
+    #it gets through searching the messages and doesnt find anything, i is false
+    assert i==False 
+
