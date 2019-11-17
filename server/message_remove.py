@@ -17,6 +17,15 @@ from token_check import token_check
 from check_channel_owner import channel_owner
 from token_to_uid import token_to_uid
 
+remove = Blueprint('remove', __name__)
+@remove.route('/message/remove', methods = ['DELETE'])
+def route():
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+
+    return dumps(message_remove(token, message_id))
+
+
 def message_remove(token, message_id):
 
     if token_check(token) == False:
@@ -29,6 +38,7 @@ def message_remove(token, message_id):
         return dumps(ret)
 
     u_id = token_to_uid(token)
+
     # go find the channel and the message that corresponds to it
     for i,items in data['channels'].items():
         for item in items['messages']:
@@ -52,13 +62,3 @@ def message_remove(token, message_id):
         "message" : "The message you are trying to remove no longer exists",
     }
     return dumps(ret)
-
-
-
-remove = Blueprint('remove', __name__)
-@remove.route('/message/remove', methods = ['DELETE'])
-def route():
-    message_id = request.form.get('message_id')
-    token = request.form.get('token')
-
-    return dumps(message_remove(token, message_id))
