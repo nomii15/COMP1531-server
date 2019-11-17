@@ -16,6 +16,15 @@ from Error import AccessError
 from token_check import token_check
 from token_to_uid import token_to_uid
 
+unreact = Blueprint('unreact', __name__)
+@unreact.route('/message/unreact', methods = ['POST'])
+def route():
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+    react_id = request.form.get('react_id')
+
+    return dumps(message_unreact(token, message_id, react_id))
+
 def message_unreact(token, message_id, react_id):
     
     if int(react_id) != 1:
@@ -65,14 +74,4 @@ def message_unreact(token, message_id, react_id):
         "name": "AccessError",
         "message" : "Invalid Message ID",
         }
-    return dumps(ret) 
-
-                        
-unreact = Blueprint('unreact', __name__)
-@unreact.route('/message/unreact', methods = ['POST'])
-def route():
-    message_id = request.form.get('message_id')
-    token = request.form.get('token')
-    react_id = request.form.get('react_id')
-
-    return dumps(message_unreact(token, message_id, react_id))
+    return dumps(ret)
