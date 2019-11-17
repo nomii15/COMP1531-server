@@ -4,10 +4,11 @@ from flask import Flask, request, Blueprint
 from json import dumps
 from token_check import token_check
 from channel_check import id_check, member_check
-from Error import AccessError
-from datetime import timezone
+from datetime import datetime, timezone
 from message_send import message_send
+from token_to_uid import token_to_uid
 import jwt
+
 
 '''
 Sending a message to get buffered in the standup queue, assuming a standup is currently active
@@ -25,40 +26,46 @@ def standup_send(token, channel_id, message):
     
     #check token
     if token_check(token) == "Invalid_token":
-        raise ValueError("Invalid Token")
+        raise ValueError(description = "Invalid Token")
 
     # check channel id
     if id_check(channel_id)==False:
-        raise ValueError("Invalid Channel ID")
+        raise ValueError(description = "Invalid Channel ID")
 
     #check if member of channel
     if member_check(token, channel_id) == False:
-        raise AccessError("Not a member of the channel")
+        raise AccessError(description = "Not a member of the channel")
+
+    if len(message) > 1000:
+        raise ValueError(description = "Messsage length > 1000")    
 
     global data 
     data = getData()
     # check whether a standup is not active
     if data['channels'][channel_id]['standup_active'] == False:
-        raise ValueError("Standup not active")
+        raise ValueError(description = "Standup not active")
 
-    # call message send to send value
-    message_send(token, channel_id, message)   
+    # get time
+    # get the current time
+    dt = datetime.utcnow()
+    timestamp = dt.replace(tzinfo=timezone.utc).timestamp()
 
     # add the message to a buffer to store
     global standup
     standup = getStandup()
 
+              
+    # standup still active, send to buffer
+    # call message send to send value
+    #message_send(token, channel_id, message)   
+
     # get the user who sent it
     name = ""
     # retrieve u_id from token
-    global SECRET 
-    SECRET = getSecret()
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
-    
+    u_id = token_to_uid(token)    
     for i, items in data['users'].items():
         if items['u_id'] == u_id:
-            name = items['name_first']
+            name = items['handle']
 
     stand_message = {
         'name': name,
@@ -87,4 +94,6 @@ def startSend():
     token = request.form.get('token')
     channel_id = int(request.form.get('channel_id'))
     message = request.form.get('message')
+    #print(message)
+    #print(channel_id)
     return dumps( standup_send(token, channel_id, message)  ) 

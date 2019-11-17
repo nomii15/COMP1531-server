@@ -5,11 +5,12 @@ from token_check import token_check
 from channel_check import id_check
 from datetime import datetime, timezone
 from message_send import message_send
-#from channel_messages import channel_messages
+from channel_messages import channel_messages
+import calendar
 
 
 def standup_active(token, channel_id):
-    if token_check(token) == "Invalid_token":
+    if token_check(token) == False:
         raise ValueError("Invalid Token")
 
     # check channel id
@@ -26,15 +27,17 @@ def standup_active(token, channel_id):
     standup = getStandup()
 
     # get the current time 
-    dt = datetime.utcnow()
-    timestamp = dt.replace(tzinfo=timezone.utc).timestamp()
+    d = datetime.utcnow()
+    unixtime = calendar.timegm(d.utctimetuple())
+    #print (unixtime)
+
     if data['channels'][channel_id]['time_finish'] == None:
         return {    
         'is_active': data['channels'][channel_id]['standup_active'],
         'time_finish': data['channels'][channel_id]['time_finish']    
-        }
+        }  
 
-    if timestamp > data['channels'][channel_id]['time_finish']:
+    if unixtime >= data['channels'][channel_id]['time_finish']:
         #need to send the data from standup to the channel
         stand_message = ""
         for i in standup:
@@ -46,7 +49,7 @@ def standup_active(token, channel_id):
                 # have all the messages, delete standup and send message as person who started standup
                 print(stand_message)
                 message_send(token, channel_id, stand_message)
-                #channel_messages(token, channel_id, 0)
+                ##channel_messages(token, channel_id, 0)
 
                 #reset standup variables and return
                 data['channels'][channel_id]['standup_active'] = False
@@ -55,13 +58,11 @@ def standup_active(token, channel_id):
                     'is_active': data['channels'][channel_id]['standup_active'],
                     'time_finish': data['channels'][channel_id]['time_finish']    
                 }
-
-
-
-    return {    
-        'is_active': data['channels'][channel_id]['standup_active'],
-        'time_finish': data['channels'][channel_id]['time_finish']    
-    }
+    else:            
+        return {    
+            'is_active': data['channels'][channel_id]['standup_active'],
+            'time_finish': data['channels'][channel_id]['time_finish']    
+        }
 
 
 active = Blueprint('active', __name__)
