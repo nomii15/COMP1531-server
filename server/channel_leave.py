@@ -29,7 +29,7 @@ def channel_leave(token, channel_id):
     if token_check(token) == False:
         raise AccessError(description = 'Invalid Token')   
 
-    if id_check(channel_id) == False:
+    if id_check(channel_id):
         raise ValueError(description = "Invalid channel_id")
     
     global data
@@ -41,20 +41,18 @@ def channel_leave(token, channel_id):
 
     # value error when channel does not exist
     for i, channel in data['channels'].items():
-        print(channel)
-        if channel['channel_id'] == channel_id:
+        if channel['channel_id'] == channel_id['channel_id']:
             # get dictionary of users details
             for j, items in data['users'].items():
                 if u_id == items['u_id']:
-                    
                     ret = {}
                     ret['u_id'] = items['u_id']
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
 
-                    data['channel_details'][channel_id]['all_members'].remove(ret)
-                    data['channel_details'][channel_id]['owner_members'].remove(ret)
-                    print(data['channel_details'][channel_id]['all_members'])
-                    print(data['channel_details'][channel_id]['owner_members'])
+                    data['channel_details'][channel_id['channel_id']]['all_members'].remove(ret)
+                    data['channel_details'][channel_id['channel_id']]['owner_members'].remove(ret)
+                    print(data['channel_details'][channel_id['channel_id']]['all_members'])
+                    print(data['channel_details'][channel_id['channel_id']]['owner_members'])
                     return {}
 
