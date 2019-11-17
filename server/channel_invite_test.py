@@ -14,9 +14,6 @@ def test_channel_invite_success():
     auth_register('user3@gmail.com', 'thisissecret123', 'user3', 'Sad')
     auth_register('user4@gmail.com', 'secretsecret123', 'user4', 'Good')    
     token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
-    #unused token could be removed
-    token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
-    token3 = jwt.encode({'u_id': 3}, SECRET, algorithm='HS256').decode('utf-8')
 
     channel = channels_create(token1, 'ch1', True)
     channel_id = channel['channel_id']
