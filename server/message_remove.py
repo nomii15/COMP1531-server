@@ -20,12 +20,14 @@ from token_to_uid import token_to_uid
 def message_remove(token, message_id):
 
     if token_check(token) == False:
+        raise ValueError(description = "Invalid Token")
         ret = {
             "code" : 400,
             "name": "AccessError",
             "message" : "Your idToken is invalid",
         }
-        return dumps(ret)  
+        return dumps(ret)
+
     u_id = token_to_uid(token)
     # go find the channel and the message that corresponds to it
     for i,items in data['channels'].items():
@@ -35,6 +37,7 @@ def message_remove(token, message_id):
                     data['channels'][i]['messages'].remove(item)
                     return dumps({})
                 else:
+                    raise ValueError(description = "Not an authorised user")
                     ret = {
                         "code" : 400,
                         "name": "AccessError",
@@ -42,6 +45,7 @@ def message_remove(token, message_id):
                     }
                     return dumps(ret)
 
+    raise ValueError(description = "Invalid Message ID")
     ret = {
         "code" : 400,
         "name": "ValueError",
