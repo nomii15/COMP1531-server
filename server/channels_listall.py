@@ -20,7 +20,7 @@ def Listall():
 
 def channels_listall(token):
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        raise AccessError(description = 'Invalid Token')
     #add channel dictionary to add to global dictionary
     global data
     data = getData()
@@ -29,19 +29,9 @@ def channels_listall(token):
 
     #for each channel, return
     for i,channel in data['channel_details'].items():
-       # print(channel)
         # if u_id in channel['all_members']:
         channelret.append({'name': channel['name'], 'channel_id': i})
 
     ret = {'channels': channelret} 
-    #print(ret) 
 
-    '''
-    ret = dict()
-
-    for channel in data['channel'].items():
-        del data['channel'][channel]['messages']
-        del data['channel'][channel]['is_public']
-        ret[channel] = data['channel'][channel]#[['name']['channel_id']] <= check how to only return these two fields 
-    '''
     return ret
