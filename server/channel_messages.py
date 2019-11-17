@@ -15,10 +15,10 @@ def channel_messages(token, channel_id, start):
     data = getData()
 
     if token_check(token) == False:
-        raise ValueError("Invalid token")
+        raise ValueError(description = "Invalid token")
 
     if member_check(token, channel_id) == False:
-        AccessError("Not a member")
+        raise AccessError(description = "Not a member")
 
     # return dictionary of the messages found, with initialisation
     message = {
@@ -39,14 +39,16 @@ def channel_messages(token, channel_id, start):
             
             #check if valid start point to read messages
             if start > len(data['channels'][channel_id]['messages']):
-                raise ValueError("Start greater than number of messages")
+                raise ValueError(description = "Start greater than number of messages")
 
-            if len(message['messages']) < 50:
+            if len(data['channels'][channel_id]['messages']) > 50 and start==0:
+                message['end'] = 49
+                end = len(data['channels'][channel_id]['messages'])
+
+            elif (len(data['channels'][channel_id]['messages']) - start) < 50:    
                 message['end'] = -1
-                end = len(message['messages']) - start
-            else:    
-                message['end'] = start+50
-                end = start+50
+                end = -1
+                #end = len(data['channels'][channel_id]['messages'])
             
             for items in data['channels'][channel_id]['messages']:
                 message['messages'].append(items)
@@ -71,7 +73,7 @@ def channel_messages(token, channel_id, start):
 
 
     # no match for a channel
-    raise ValueError("No channel matches the channel id given")
+    raise ValueError(description = "No channel matches the channel id given")
 
 
     # check that the channel id is correct
@@ -89,7 +91,7 @@ channel_message = Blueprint('channel_message', __name__)
 @channel_message.route('/channel/messages', methods = ['GET'])
 def getMessages():
 
-    token = request.args.get('token')
+    token = str(request.args.get('token'))
     channel_id = int(request.args.get('channel_id'))
     start = int(request.args.get('start'))
     return dumps( channel_messages(token, channel_id, start)     )
