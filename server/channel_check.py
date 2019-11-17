@@ -24,6 +24,6 @@ def id_check(channel_id):
     global data
     data = getData()
     for i, channel in data['channels'].items():
-        if channel_id == i:
+        if channel_id == channel[channel_id]:
             return True
     return False
