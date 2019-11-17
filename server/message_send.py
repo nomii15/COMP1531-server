@@ -17,7 +17,7 @@ from token_to_uid import token_to_uid
 def message_send(token, channel_id, message):
 
     if (len(message) > 1000):
-        raise ValueError(description = "Invalid Mesasge")
+        raise ValueError(description = "Invalid Message")
         ret = {
             "code" : 400,
             "name": "ValueError",
