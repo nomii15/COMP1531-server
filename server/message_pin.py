@@ -17,6 +17,14 @@ from check_channel_owner import channel_owner
 import jwt
 from token_to_uid import token_to_uid
 
+pin = Blueprint('pin', __name__)
+@pin.route('/message/pin', methods = ['POST'])
+def route():
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+
+    return dumps(message_pin(token, message_id))
+
 def message_pin(token, message_id):
     if token_check(token) == False:
         raise AccessError("Invalid Token")
@@ -65,13 +73,4 @@ def message_pin(token, message_id):
         "name": "ValueError",
         "message" : "Could not find message, with message Id",
     }
-    return dumps(ret)   
-                
-
-pin = Blueprint('pin', __name__)
-@pin.route('/message/pin', methods = ['POST'])
-def route():
-    message_id = request.form.get('message_id')
-    token = request.form.get('token')
-
-    return dumps(message_pin(token, message_id))
+    return dumps(ret)
