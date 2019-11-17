@@ -7,8 +7,7 @@ import jwt
 # importing the data file
 from data import *
 from token_check import *
-
-from uid_check import *
+from token_to_uid import token_to_uid
 from channel_check import *
 
 
@@ -31,24 +30,26 @@ def Join():
     return dumps(channel_join(token, channel_id))
 
 def channel_join(token, channel_id):
+
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        raise AccessError(description = 'Invalid Token')
 
     if id_check(channel_id):
-        raise ValueError("channel_id does not refer to a valid channel that the authorised user is part of.")
-        
+        raise ValueError(description = "Channel does not exist.")
 
-    global SECRET    
-    SECRET = getSecret()
-    Payload = jwt.decode(token, SECRET, algorithms='HS256')
-    u_id = Payload['u_id'] 
-
-    if uid_check(u_id) == False:
-        raise ValueError("invalid u_id.")      
+    u_id = token_to_uid(token)
 
     global data
     data = getData()
 
+    for i, items in data['channel_details'].items():
+        if items['is_public'] == False:
+            #Checking if channel is private
+            for j, item in data['users'].items():
+                if u_id == item['u_id']:
+                #if permission is 3, does not have access
+                    if item['permission'] == 3:
+                    raise AccessError(description = "Channel is private, user is not an admin or owner of the slackr")
 
 
     # value error when channel does not exist
