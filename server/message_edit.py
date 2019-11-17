@@ -19,10 +19,11 @@ from token_to_uid import token_to_uid
 def message_edit(token, message_id, message):
 
     if token_check(token) == False:
+        raise ValueError(description = "Invalid Token")
         ret = {
             "code" : 400,
             "name": "AccessError",
-            "message" : "Your idToken is invalid",
+            "message" : "Invalid Token",
         }
         return dumps(ret)
     u_id = token_to_uid(token)
@@ -64,6 +65,7 @@ def message_edit(token, message_id, message):
                     return dumps({})
 
     #you would only get down to this logic if you did not create message and are not an owner
+    raise AccessError('Not an authorised user')
     ret = {
         "code" : 400,
         "name": "AccessError",

@@ -1,38 +1,115 @@
-from message_edit import *
+from message_edit import message_edit
+from auth_register import auth_register
+from channels_create import channels_create
+from channel_join import channel_join
+from message_send import message_send
+from data import *
 import pytest
 
-#test for message not found
+#test diff user tries to edit message
 def test_incorrect_user():
-    u_id1, token1 = auth_register("validemail1@gmail.com", "validpassword1", "USER", "validname")
-    u_id2, token2 = auth_register("validemail1@gmail.com", "validpassword1", "ADMIN", "validname")
-    u_id3, token3 = auth_register("validemail1@gmail.com", "validpassword1", "OWNER", "validname")
-    u_id4, token4 = auth_register("validemail1@gmail.com", "validpassword1", "INCORRECT USER", "validname")
-    #owner creates a channel
-    channelResponse = channels_create(token3, "My Channel", True)
-    channel_id = channelResponse['channel_id']
-    #two users join that chanenl
-    channel_join(token1, channel_id)
-    channel_join(token4, channel_id)
-    #user 1 sends a message
-    message = "A message you send"
-    message_send(token1, channel_id, message)
-    #raise error if user 4 tries to edit that message
-    with pytest.raises(ValueError, match = '*Not an authorised user*'):
-        message_edit(token4, message)
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
+	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
+	user1_token = user1['token']
+	user2 = auth_register("validemail3@gmail.com", "validpassword1", "INCORRECT USER2", "validname3")
+	user2_token = user2['token']
+	#owner creates a channel
+	channelResponse = channels_create(owner_token, "My Channel", True)
+	channel_id = channelResponse['channel_id']
+	#two users join that chanenl
+	channel_join(user2_token, channel_id)
+	channel_join(user1_token, channel_id)
+	#user 1 sends a message
+	message = "A message you send"
+	message_sent = message_send(user1_token, channel_id, message)
+	message_id = message_sent['message_id']
+	new_message = 'user 2 wants to edit the message'
+	#raise error if user 2 tries to edit
+	with pytest.raises(ValueError, match = '*Not an authorised user*'):
+		message_edit(user2_token , message_id , new_message)
 
+#test owner tries to edit message
+def test_owner_edit():
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
+	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
+	user1_token = user1['token']
+	#owner creates a channel
+	channelResponse = channels_create(owner_token, "My Channel", True)
+	channel_id = channelResponse['channel_id']
+	#user join that chanenl
+	channel_join(user1_token, channel_id)
+	#user 1 sends a message
+	message = "A message you send"
+	message_sent = message_send(user1_token, channel_id, message)
+	message_id = message_sent['message_id']
 
-#Valid
-def test_vaild():
-    u_id1, token1 = auth_register("validemail1@gmail.com", "validpassword1", "USER", "validname")
-    u_id2, token2 = auth_register("validemail1@gmail.com", "validpassword1", "ADMIN", "validname")
-    u_id3, token3 = auth_register("validemail1@gmail.com", "validpassword1", "OWNER", "validname")
-    #owner creates a channel
-    channelResponse = channels_create(token3, "My Channel", True)
-    channel_id = channelResponse['channel_id']
-    #two users join that chanenl
-    channel_join(token1, channel_id)
-    #user 1 sends a message
-    message = "A message you send"
-    message_send(token1, channel_id, message)
+	new_message = 'owner wants to edit the message'
 
-    assert (message_edit(token1, message) == {})
+	message_edit(owner_token, message_id, new_message)
+
+	i = False
+	for i, item in data['channels'].items():
+		for currMessage in item['messages']:
+			if currMessage['message_id'] == int(message_id) and currMessage['message'] == new_message:
+				i = True
+	
+	assert i
+
+#test message creator tries to edit own message
+def test_user_edit():
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
+	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
+	user1_token = user1['token']
+	#owner creates a channel
+	channelResponse = channels_create(owner_token, "My Channel", True)
+	channel_id = channelResponse['channel_id']
+	#user join that channel
+	channel_join(user1_token, channel_id)
+	#user 1 sends a message
+	message = "A message you send"
+	message_sent = message_send(user1_token, channel_id, message)
+	message_id = message_sent['message_id']
+
+	new_message = 'user wants to edit own message'
+
+	message_edit(user1_token, message_id, new_message)
+
+	i = False
+	for i, item in data['channels'].items():
+		for currMessage in item['messages']:
+			if currMessage['message_id'] == int(message_id) and currMessage['message'] == new_message:
+				i = True
+	
+	assert i
+
+#test empty string in message edit (should remove the message)
+def test_empty_string():
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
+	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
+	user1_token = user1['token']
+	#owner creates a channel
+	channelResponse = channels_create(owner_token, "My Channel", True)
+	channel_id = channelResponse['channel_id']
+	#user join that channel
+	channel_join(user1_token, channel_id)
+	#user 1 sends a message
+	message = "A message you send"
+	message_sent = message_send(user1_token, channel_id, message)
+	message_id = message_sent['message_id']
+
+	new_message = ''
+
+	message_edit(user1_token, message_id, new_message)
+
+	i = False
+	for i, item in data['channels'].items():
+		for currMessage in item['messages']:
+			if currMessage['message_id'] == int(message_id) and currMessage['message'] == new_message:
+				i = True
+	
+	#shouldnt find the message with message_id in the data (i should remain False)
+	assert i == False
