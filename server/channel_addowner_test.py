@@ -34,6 +34,8 @@ def setup():
     channel_id1 = channels_create(token1, 'channel1', True)
     channel_id3 = channels_create(token3, 'channel3', True)
 
+setup()
+
 def test_value_error_channel():
     #channel id does not exist
     with pytest.raises(ValueError,match=r"*"):
