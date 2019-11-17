@@ -36,4 +36,3 @@ def test_channel_details_invalid_member():
     token3 = jwt.encode({'u_id': 3}, SECRET, algorithm='HS256').decode('utf-8')
     with pytest.raises(AccessError, match='Authorised user is not a member of this channel.'):
         channel_details(token3, 1)
-
