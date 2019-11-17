@@ -19,6 +19,7 @@ from token_to_uid import token_to_uid
 def message_react(token, message_id, react_id):
     
     if int(react_id) != 1:
+        raise ValueError(description='Invalid React ID')
         ret = {
             "code" : 400,
             "name": "ValueError",
@@ -28,6 +29,7 @@ def message_react(token, message_id, react_id):
 
 
     if token_check(token) == False:
+        raise AccessError('Invalid Token')
         ret = {
             "code" : 400,
             "name": "AccessError",
@@ -43,7 +45,7 @@ def message_react(token, message_id, react_id):
     # get message
     for i,items in data['channels'].items():
         for item in items['messages']:
-            if item['message_id']==int(message_id):
+            if item['message_id'] == int(message_id):
                 for react in item['reacts']:
                     if react['react_id'] == int(react_id):
                         if u_id not in react['u_ids']:
@@ -51,6 +53,7 @@ def message_react(token, message_id, react_id):
                         if u_id == item['u_id']:
                             react['is_this_user_reacted'] = True
                         else:
+                            raise ValueError(description='Already reacted')
                             ret = {
                                 "code" : 400,
                                 "name": "ValueError",
@@ -58,7 +61,8 @@ def message_react(token, message_id, react_id):
                             }
                             return dumps(ret)
                         return dumps({}) 
-
+    
+    raise ValueError(description='Invalid Message ID')
     ret = {
         "code" : 400,
         "name": "AccessError",

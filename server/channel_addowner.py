@@ -16,6 +16,7 @@ import jwt
 from Error import *
 from token_check import token_check
 from channel_check import member_check, id_check
+from token_to_uid import token_to_uid
 
 # importing the data file
 from data import *
@@ -24,27 +25,31 @@ addowner = Blueprint('addowner', __name__)
 @addowner.route('/channel/addowner')
 def Addowner():
     token = request.form.get('token')
-    channel_id = request.form.get('channel_id')
-    u_id = request.form.get('u_id')
+    channel_id = int(request.form.get('channel_id'))
+    u_id = int(request.form.get('u_id'))
     return dumps(channel_addowner(token, channel_id, u_id))
 
 def channel_addowner(token, channel_id, u_id):
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        raise AccessError(description = 'Invalid Token')
 
-     #exceptions
-     
-    if id_check(int(channel_id)):
-        raise ValueError("Channel_id does not refer to a valid channel that the authorised user is part of.")
+    #exceptions
+    if id_check(channel_id) == False:
+        raise ValueError(description = "Channel_id does not refer to a valid channel that the authorised user is part of.")
 
     if member_check(token, channel_id) == False:
-        raise AccessError("Inviter is not a member of the given channel.")
+        raise AccessError(description = "Inviter is not a member of the given channel.")
         
+    if uid_check(u_id) == False:
+        raise ValueError(description = "Invalid u_id.")
 
-
-        
-    if uid_check(int(u_id)) == False:
-        raise ValueError("Invalid u_id.")
+    admin_u_id = token_to_uid(token)
+    
+    for j, item in data['users'].items():
+        if admin_u_id == item['u_id']:
+            #Checking user slackr permissions
+            if item['permission'] == 3:
+                raise AccessError(description = "Inviter is not an owner or admin of the slackr")
 
     # all valid, add u_id to owner channel
     for i, channel in data['channels'].items():
@@ -58,4 +63,4 @@ def channel_addowner(token, channel_id, u_id):
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
                     data['channels'][channel_id]['owner_members'].append()
-                    return ret    
+                    return {} 

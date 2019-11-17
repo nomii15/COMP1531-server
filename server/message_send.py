@@ -17,6 +17,7 @@ from token_to_uid import token_to_uid
 def message_send(token, channel_id, message):
 
     if (len(message) > 1000):
+        raise ValueError(description = "Invalid Message")
         ret = {
             "code" : 400,
             "name": "ValueError",
@@ -28,6 +29,7 @@ def message_send(token, channel_id, message):
     data = getData()
 
     if token_check(token) == False:
+        raise AccessError("Invalid Token")
         ret = {
             "code" : 400,
             "name": "AccessError",
@@ -37,6 +39,7 @@ def message_send(token, channel_id, message):
     
     
     if id_check(int(channel_id)) == False:
+        raise ValueError(description = "Not an authorised user")
         ret = {
             "code" : 400,
             "name": "AccessError",
