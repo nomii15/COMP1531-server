@@ -27,7 +27,7 @@ def Create():
 
 def channels_create(token, name, is_public):
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        raise AccessError(description = "Invalid Token")
 
     # channel name length check
     if len(name) > 20:
@@ -47,7 +47,6 @@ def channels_create(token, name, is_public):
     # the user who calls this is the creator of the channel
     data['channels'][channel] = {'channel_id': channel_id, 'name': name, 'messages': [], 'standup_active': False, 'time_finish': None, 'startup_user': None}
 
-
     detail = {}
     for i, items in data['users'].items():
         if items['u_id'] == u_id:
@@ -56,9 +55,6 @@ def channels_create(token, name, is_public):
             detail['name_first'] = items['name_first']
             detail['name_last'] = items['name_last']
             break
-
-
-
     
     # adding to channel details, registering as a member of the channel
     # creator of the channel is also added

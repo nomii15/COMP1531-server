@@ -18,9 +18,9 @@ def channel_details(token, channel_id):
     data = getData()
     #exceptions
     if id_check(channel_id) is not True:
-        raise ValueError("invalid channel id")
+        raise ValueError(description = "Invalid channel_id")
     if member_check(token, channel_id) is not True:
-        raise AccessError("Authorised user is not a member of this channel.")
+        raise AccessError(description = "Authorised user is not a member of this channel.")
     ret = {
         'name': data['channel_details'][channel_id]['name'],
         'owner_members': [],

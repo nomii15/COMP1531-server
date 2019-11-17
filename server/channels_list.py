@@ -6,6 +6,7 @@ from Error import AccessError
 # importing the data file
 from data import *
 from token_check import *
+from token_to_uid import token_to_uid
 
 '''
 Provide a list of all channels (and their associated details) that the authorised user is part of
@@ -24,15 +25,14 @@ def channels_list(token):
     # return data['channel_details'][list]
 
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        raise AccessError(description = 'Invalid Token')
     
     #add channel dictionary to add to global dictionary
     global data
     data = getData()
 
     #extract u_id from token
-    token_payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = token_payload['u_id']
+    u_id = token_to_uid(token)
 
     channelret = []
 
@@ -44,12 +44,6 @@ def channels_list(token):
                 channelret.append({'channel_id': i, 'name': channel['name']})
 
     ret = {'channels': channelret} 
-    #print(ret)       
-    '''
-    ret = dict()
-    for channel in channel_list:
-        del channel['channel'][channel]['messages']
-        ret['channel'] = data['channel'][channel]#[['name']['channel_id']] <= check how to only return these two fields 
-    '''
+
     return ret
         

@@ -23,27 +23,25 @@ removeowner = Blueprint('removeowner', __name__)
 @removeowner.route('/channel/removeowner')
 def Removeowner():
     token = request.form.get('token')
-    channel_id = request.form.get('channel_id')
-    u_id = request.form.get('u_id')
+    channel_id = int(request.form.get('channel_id'))
+    u_id = int(request.form.get('u_id'))
     return dumps(channel_removeowner(token, channel_id, u_id))
 
 def channel_removeowner(token, channel_id, u_id):
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        raise AccessError(description = 'Invalid Token')
 
-     #exceptions
+    #exceptions
     if member_check(token, channel_id) == False:
-        raise AccessError("inviter is not a member of the given channel.")
-        
+        raise AccessError(description = "inviter is not a member of the given channel.")
 
-    if id_check(int(channel_id)):
-        raise ValueError("channel_id does not refer to a valid channel that the authorised user is part of.")
+    if id_check(channel_id):
+        raise ValueError(description = "channel_id does not refer to a valid channel that the authorised user is part of.")
 
-        
-    if uid_check(int(u_id)) == False:
-        raise ValueError("invalid u_id.")
+    if uid_check(u_id) == False:
+        raise ValueError(description = "invalid u_id.")
 
-    # all valid, remove u_id form owner channel
+    # all valid, remove u_id from owner channel
     for i, channel in data['channels'].items():
         if channel['channel_id'] == int(channel_id):
             # get dictionary of users details
@@ -55,4 +53,4 @@ def channel_removeowner(token, channel_id, u_id):
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
                     data['channels'][channel_id]['owner_members'].remove(ret)
-                    return ret
+                    return {}

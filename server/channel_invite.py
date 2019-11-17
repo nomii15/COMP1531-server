@@ -16,16 +16,17 @@ def channel_invite_route():
 def channel_invite(token, channel_id, u_id):
     global data
     data = getData()
+    if token_check(token) == False:
+        raise AccessError(description = 'Invalid Token')
     #exceptions
     if uid_check(u_id) is not True:
-        raise ValueError("invalid u_id.")
+        raise ValueError(description = "Invalid u_id.")
     if member_check(token, channel_id) is not True:
-        raise AccessError("inviter is not a member of the given channel.")
+        raise AccessError(description = "Inviter is not a member of the given channel.")
     if id_check(channel_id) is not True:
-        raise ValueError("invalid channel.")
+        raise ValueError(description = "Invalid channel_id")
     
-    new_member = {
-    }
+    new_member = {}
     
     for key, item in data['users'].items():
         if key == u_id:
@@ -33,5 +34,5 @@ def channel_invite(token, channel_id, u_id):
             new_member['name_first'] = item['name_first']
             new_member['name_last'] = item['name_last']
     data['channel_details'][channel_id]['all_members'].append(new_member)
-    return {
-    }
+    
+    return {}

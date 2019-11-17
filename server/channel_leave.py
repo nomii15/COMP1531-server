@@ -7,6 +7,7 @@ from Error import AccessError
 from data import *
 from token_check import *
 from channel_check import id_check
+from token_to_uid import token_to_uid
 
 '''
 Given a channel ID, the user removed as a member of this channel.
@@ -26,16 +27,17 @@ def Leave():
 
 def channel_leave(token, channel_id):
     if token_check(token) == False:
-        raise AccessError('Invalid Token')   
+        raise AccessError(description = 'Invalid Token')   
 
-
-    global SECRET    
-    SECRET = getSecret()
-    Payload = jwt.decode(token, SECRET, algorithms='HS256')
-    u_id = Payload['u_id']    
-
+    if id_check(channel_id) == False:
+        raise ValueError(description = "Invalid channel_id")
+    
     global data
     data = getData()
+
+    # get uid from token
+    u_id = token_to_uid(token)
+
 
     # value error when channel does not exist
     for i, channel in data['channels'].items():
@@ -54,8 +56,5 @@ def channel_leave(token, channel_id):
                     data['channel_details'][channel_id]['owner_members'].remove(ret)
                     print(data['channel_details'][channel_id]['all_members'])
                     print(data['channel_details'][channel_id]['owner_members'])
-                    return ret
-            # if get to end of this loop, user isnt valid
-    raise AccessError("not in channel")    
-    # if here channel doesnt exist 
+                    return {}
 
