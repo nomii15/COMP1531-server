@@ -14,6 +14,15 @@ from token_check import token_check
 from channel_check import id_check
 from token_to_uid import token_to_uid
 
+send = Blueprint('send', __name__)
+@send.route('/message/send', methods = ['POST'])
+def route():
+    message = request.form.get('message')
+    token = request.form.get('token')
+    channel_id = request.form.get('channel_id')
+
+    return dumps(message_send(token, channel_id, message))
+
 def message_send(token, channel_id, message):
 
     if (len(message) > 1000):
@@ -50,8 +59,10 @@ def message_send(token, channel_id, message):
 
     global Message
     Message = getMessage()
+    
     now = datetime.now()
     timestamp = now.replace(tzinfo=timezone.utc).timestamp()
+    
     reacts = [{
         'react_id': 1,
         'u_ids': [],
@@ -76,16 +87,3 @@ def message_send(token, channel_id, message):
             ret = {'message_id': Message}
             incMessage()
             return dumps({'message_id': Message})
-            
-
-    
-
-
-send = Blueprint('send', __name__)
-@send.route('/message/send', methods = ['POST'])
-def route():
-    message = request.form.get('message')
-    token = request.form.get('token')
-    channel_id = request.form.get('channel_id')
-
-    return dumps(message_send(token, channel_id, message))
