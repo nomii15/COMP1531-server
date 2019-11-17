@@ -19,7 +19,7 @@ from token_to_uid import token_to_uid
 
 def message_pin(token, message_id):
     if token_check(token) == False:
-        raise ValueError(description = "Invalid Token")
+        raise AccessError("Invalid Token")
         ret = {
             "code" : 400,
             "name": "AccessError",
