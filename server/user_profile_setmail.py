@@ -4,6 +4,7 @@ import jwt
 from data import *
 from email_check import email_check
 from token_check import token_check
+from token_to_uid import token_to_uid
 
 SETMAIL = Blueprint('SETMAIL', __name__)
 
@@ -22,9 +23,7 @@ def user_profile_setmail(token, email):
         if item['email'] == email:
             raise ValueError(description = "email address has been used")            
     #decode the token and get u_id of the authorised user
-    SECRET = getSecret()
-    payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = payload['u_id']
+    u_id = token_to_uid(token)
     #update the email
     for key, item in data['users'].items():
         if key == u_id:
