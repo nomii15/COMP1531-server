@@ -40,6 +40,9 @@ from user_profiles_uploadphoto import uploadphoto
 from standup_active import active
 from standup_start import start
 from standup_send import standsend
+from admin_userpermission_change import adminChange
+from channel_addowner import addowner
+from channel_removeowner import removeowner
 
 
 def defaultHandler(err):
@@ -91,6 +94,9 @@ APP.register_blueprint(active)
 APP.register_blueprint(standsend)
 APP.register_blueprint(start)
 APP.register_blueprint(sendlater)
+APP.register_blueprint(adminChange)
+APP.register_blueprint(addowner)
+APP.register_blueprint(removeowner)
 
 
 '''
