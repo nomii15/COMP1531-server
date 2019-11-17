@@ -28,10 +28,11 @@ def message_sendlater(token, channel_id, message, time_sent):
     print(time_sent)
     if token_check(token) == False:
         print('in token check')
+        raise ValueError(description = "Invalid Token")
         ret = {
             "code" : 400,
             "name": "AccessError",
-            "message" : "Your idToken is invalid",
+            "message" : "Invalid Token",
         }
         return dumps(ret)
 
@@ -46,19 +47,21 @@ def message_sendlater(token, channel_id, message, time_sent):
 
     if channel_exists == False:
         print('in channelid check')
+        raise ValueError(description = "Invalid Channel ID")
         ret = {
-        "code" : 400,
-        "name": "ValueError",
-        "message" : "Could not find a channel with the specified Id",
+            "code" : 400,
+            "name": "ValueError",
+            "message" : "Invalid Channel ID",
         }
         return dumps(ret) 
 
     if len(message) > 1000:
         print('in len check')
+        raise ValueError(description = "Invalid Message")
         ret = {
             "code" : 400,
             "name": "ValueError",
-            "message" : "The message sent was too long",
+            "message" : "Invalid Message",
         }
         return dumps(ret)
         
@@ -67,10 +70,11 @@ def message_sendlater(token, channel_id, message, time_sent):
     print(datetime.timestamp(now))
     if int(time_sent) < int(datetime.timestamp(now)):
         print('in time check')
+        raise ValueError(description = "Invalid Time")
         ret = {
             "code" : 400,
             "name": "ValueError",
-            "message" : "You cannot send a message in the past",
+            "message" : "Invalid Time",
         }
         return dumps(ret)
 
