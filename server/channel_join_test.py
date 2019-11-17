@@ -32,8 +32,8 @@ def test_one():
     channel_id1 = channels_create(token1, 'channel1', True)
     channel_join(token2, channel_id1)
     channel_list2 = channels_list(token2)
-    print(channel_list2)
-    assert channel_id1 in channel_list2.items()
+    channel_list = {'channels': [{'channel_id': 1, 'name': 'channel1'}]}
+    assert channel_list == channel_list2
 
 def test_value_error():
     global data

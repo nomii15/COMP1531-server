@@ -74,9 +74,9 @@ def channel_join(token, channel_id):
                     ret['u_id'] = items['u_id']
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
-                    data['channel_details'][channel_id]['all_members'].append(ret)
+                    data['channel_details'][channel_id['channel_id']]['all_members'].append(ret)
                     #If user is an admin of the slackr, setting as owner member of channel
                     if is_admin == True:
-                        data['channel_details'][channel_id]['owner_members'].append(ret)
+                        data['channel_details'][channel_id['channel_id']]['owner_members'].append(ret)
                     return {}
                     
