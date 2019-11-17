@@ -19,6 +19,8 @@ from Error import *
 # importing the data file
 from data import *
 from token_to_uid import token_to_uid
+from token_check import token_check
+from channel_check import *
 
 removeowner = Blueprint('removeowner', __name__)
 @removeowner.route('/channel/removeowner')
@@ -33,11 +35,12 @@ def channel_removeowner(token, channel_id, u_id):
         raise AccessError(description = 'Invalid Token')
 
     #exceptions
+    print(id_check(channel_id))
+    if id_check(channel_id) == False:
+        raise ValueError(description = "channel_id does not refer to a valid channel that the authorised user is part of.")
+
     if member_check(token, channel_id) == False:
         raise AccessError(description = "inviter is not a member of the given channel.")
-
-    if id_check(channel_id):
-        raise ValueError(description = "channel_id does not refer to a valid channel that the authorised user is part of.")
 
     if uid_check(u_id) == False:
         raise ValueError(description = "invalid u_id.")
