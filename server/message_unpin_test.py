@@ -1,33 +1,83 @@
-from message_unpin import *
+from message_unpin import message_unpin
+from message_pin import message_pin
+from auth_register import auth_register
+from channels_create import channels_create
+from channel_join import channel_join
+from message_send import message_send
+from data import *
 import pytest
-
-#You would never reach access error because you only ever search for channels in which the user is apart of
 
 #test for invalid message
 def test_invalid_message():
-    u_id1, token1 = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")
-    channelResponse = channels_create(token1, "My Channel", False)
-    channel_id = channelResponse['channel_id']
-    message_valid = "Hello this is valid"
-    messaage_invalid = "this is invalid"
-    with pytest.raises(ValueError, match = '*Invalid messageId*'):
-        message_unpin(token1, message_invalid)
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
+	#owner creates a channel
+	channelResponse = channels_create(owner_token, "My Channel", True)
+	channel_id = channelResponse['channel_id']
+	#owner sends a message
+	message = "A message you send"
+	message_sent = message_send(owner_token, channel_id, message)
+	message_id = message_sent['message_id']
+	#raise error if wanting to pin invalid message
+	message_pin(owner_token , message_id)
+	with pytest.raises(ValueError, match = '*Invalid Message ID*'):
+		message_unpin(owner_token , -1)
 
 #test for user not admin
 def test_authorisation():
-    u_id1, token1 = auth_register("validemail1@gmail.com", "validpassword1", "USER", "validname")
-    u_id2, token2 = auth_register("validemail1@gmail.com", "validpassword1", "ADMIN", "validname")
-    channelResponse = channels_create(token2, "My Channel", False)
-    channel_id = channelResponse['channel_id']
-    message_valid = "A valid message"
-    with pytest.raises(ValueError, match = '*User is not an admin*'):
-        message_unpin(token1, message_valid)
-    
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
+	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
+	user1_token = user1['token']
+	#owner creates a channel
+	channelResponse = channels_create(owner_token, "My Channel", True)
+	channel_id = channelResponse['channel_id']
+	#owner sends a message
+	message = "A message you send"
+	message_sent = message_send(user1_token, channel_id, message)
+	message_id = message_sent['message_id']
+	#raise error if wanting to pin invalid message
+	message_pin(owner_token , message_id)
+	with pytest.raises(ValueError, match = '*Not an authorised user*'):
+		message_unpin(user1_token , message_id)
+		
+#test already pinned
+def test_unpinned():
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
+	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
+	user1_token = user1['token']
+	#owner creates a channel
+	channelResponse = channels_create(owner_token, "My Channel", True)
+	channel_id = channelResponse['channel_id']
+	#owner sends a message
+	message = "A message you send"
+	message_sent = message_send(user1_token, channel_id, message)
+	message_id = message_sent['message_id']
+	#raise error if wanting to pin invalid message
+	with pytest.raises(ValueError, match = '*Message already unpinned*'):
+		message_unpin(owner_token , message_id)
+
 #valid cases
 def test_valid():
-    u_id1, token1 = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")
-    channelResponse = channels_create(token1, "My Channel", False)
-    channel_id = channelResponse['channel_id']
-    message = "A valid message"
-    
-    assert (message_unpin(token1, message) == {})
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
+	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
+	user1_token = user1['token']
+	#owner creates a channel
+	channelResponse = channels_create(owner_token, "My Channel", True)
+	channel_id = channelResponse['channel_id']
+	#owner sends a message
+	message = "A message you send"
+	message_sent = message_send(user1_token, channel_id, message)
+	message_id = message_sent['message_id']
+	#raise error if wanting to pin invalid message
+	message_pin(owner_token, message_id)
+	message_unpin(owner_token, message_id)
+	unpinned = False
+	for i, items in data['channels'].items():
+		for item in items['messages']:
+			if item['message_id'] == int(message_id) and item['is_pinned'] == False:
+				unpinned = True
+
+	assert unpinned == True

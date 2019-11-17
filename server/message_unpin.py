@@ -19,6 +19,7 @@ from token_to_uid import token_to_uid
 
 def message_unpin(token, message_id):
     if token_check(token) == False:
+        raise AccessError("Invalid Token")
         ret = {
             "code" : 400,
             "name": "AccessError",
@@ -38,6 +39,7 @@ def message_unpin(token, message_id):
                         item['is_pinned']=False
                         return dumps({})
                     else:
+                        raise ValueError(description = "Message already unpinned")
                         ret = {
                             "code" : 400,
                             "name": "ValueError",
@@ -45,12 +47,22 @@ def message_unpin(token, message_id):
                         }
                         return dumps(ret)  
                 else :
+                    raise ValueError(description = "Not an authorised user")
                     ret = {
                         "code" : 400,
                         "name": "ValueError",
                         "message" : "The authorised user is not an admin",
                     }
                     return dumps(ret) 
+
+    #if you get to this logic, means you couldnt find message with messageId
+    raise ValueError(description = "Invalid Message ID")
+    ret = {
+        "code" : 400,
+        "name": "ValueError",
+        "message" : "Could not find message, with message Id",
+    }
+    return dumps(ret) 
 
 
 unpin = Blueprint('unpin', __name__)
