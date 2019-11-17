@@ -9,6 +9,10 @@ import pytest
 
 #test for invalid message
 def test_invalid_message():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	
@@ -28,6 +32,10 @@ def test_invalid_message():
 
 #test for user not admin
 def test_authorisation():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
@@ -51,6 +59,10 @@ def test_authorisation():
 		
 #test already pinned
 def test_unpinned():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
@@ -73,6 +85,10 @@ def test_unpinned():
 
 #valid cases
 def test_valid():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")

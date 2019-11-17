@@ -7,6 +7,10 @@ import pytest
 
 #test for invalid message
 def test_long_message():
+
+	global data
+	data = getData()
+	
 	user = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")
 	token1 = user['token']
 		
@@ -20,6 +24,10 @@ def test_long_message():
 
 #unauthorised user
 def test_incorrect_user():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
@@ -36,6 +44,10 @@ def test_incorrect_user():
 
 #valid cases
 def test_valid_case():
+	
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")

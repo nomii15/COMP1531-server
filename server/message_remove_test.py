@@ -8,6 +8,10 @@ import pytest
 
 #test for message not found
 def test_unknown_message():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 
@@ -25,6 +29,10 @@ def test_unknown_message():
 
 #test for not authorised
 def test_incorrect_user():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
@@ -51,6 +59,10 @@ def test_incorrect_user():
 
 #user removes case
 def test_user_removes():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
@@ -80,6 +92,10 @@ def test_user_removes():
 
 #owner removes case
 def test_owner_removes():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")

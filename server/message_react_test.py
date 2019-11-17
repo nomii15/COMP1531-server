@@ -8,6 +8,10 @@ import pytest
 
 #test for message not found
 def test_invalid_message():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	
@@ -25,6 +29,10 @@ def test_invalid_message():
 
 #test for invalid react
 def test_invalid_react():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
@@ -48,6 +56,10 @@ def test_invalid_react():
 
 #test for message already reacted
 def test_message_reacted():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
@@ -71,6 +83,10 @@ def test_message_reacted():
 
 #Valid
 def test_vaild():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")

@@ -8,38 +8,53 @@ import pytest
 
 #test diff user tries to edit message
 def test_incorrect_user():
+
+	global data
+	data = getData()
+
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
 	user1_token = user1['token']
 	user2 = auth_register("validemail3@gmail.com", "validpassword1", "INCORRECT USER2", "validname3")
 	user2_token = user2['token']
+	
 	#owner creates a channel
 	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = channelResponse['channel_id']
+	
 	#two users join that chanenl
 	channel_join(user2_token, channel_id)
 	channel_join(user1_token, channel_id)
+	
 	#user 1 sends a message
 	message = "A message you send"
 	message_sent = message_send(user1_token, channel_id, message)
 	message_id = message_sent['message_id']
 	new_message = 'user 2 wants to edit the message'
+	
 	#raise error if user 2 tries to edit
 	with pytest.raises(ValueError, match = '*Not an authorised user*'):
 		message_edit(user2_token , message_id , new_message)
 
 #test owner tries to edit message
 def test_owner_edit():
+
+	global data
+	data = getData()
+
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
 	user1_token = user1['token']
+	
 	#owner creates a channel
 	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = channelResponse['channel_id']
+	
 	#user join that chanenl
 	channel_join(user1_token, channel_id)
+	
 	#user 1 sends a message
 	message = "A message you send"
 	message_sent = message_send(user1_token, channel_id, message)
@@ -59,15 +74,22 @@ def test_owner_edit():
 
 #test message creator tries to edit own message
 def test_user_edit():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
 	user1_token = user1['token']
+	
 	#owner creates a channel
 	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = channelResponse['channel_id']
+	
 	#user join that channel
 	channel_join(user1_token, channel_id)
+	
 	#user 1 sends a message
 	message = "A message you send"
 	message_sent = message_send(user1_token, channel_id, message)
@@ -87,15 +109,22 @@ def test_user_edit():
 
 #test empty string in message edit (should remove the message)
 def test_empty_string():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
 	user1_token = user1['token']
+	
 	#owner creates a channel
 	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = channelResponse['channel_id']
+	
 	#user join that channel
 	channel_join(user1_token, channel_id)
+	
 	#user 1 sends a message
 	message = "A message you send"
 	message_sent = message_send(user1_token, channel_id, message)

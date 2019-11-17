@@ -8,6 +8,10 @@ import pytest
 
 #test for invalid channel_id
 def test_invalid_channel():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")
@@ -28,6 +32,10 @@ def test_invalid_channel():
 
 #test for invalid message
 def test_invalid_message():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")
@@ -48,6 +56,10 @@ def test_invalid_message():
 
 #test for invalid time
 def test_invalid_time():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")
@@ -68,6 +80,10 @@ def test_invalid_time():
     
 #valid cases
 def test_valid():
+
+	global data
+	data = getData()
+	
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
 	owner_token = owner['token']
 	user = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")
