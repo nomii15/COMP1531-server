@@ -31,6 +31,8 @@ def test_one():
 
     channel_id1 = channels_create(token1, 'channel1', True)
     channel_join(token2, channel_id1)
+    channel_list1 = channels_list(token1)
+    print(channel_list1)
     channel_list2 = channels_list(token2)
     channel_list = {'channels': [{'channel_id': 1, 'name': 'channel1'}]}
     assert channel_list == channel_list2

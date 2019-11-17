@@ -40,12 +40,13 @@ def channels_create(token, name, is_public):
     global channel
     channel = getChannels()
 
+    
     channel_id = channel
 
     # get uid from token
     u_id = token_to_uid(token)
     # the user who calls this is the creator of the channel
-    data['channels'][channel] = {'channel_id': channel_id, 'name': name, 'messages': [], 'standup_active': False, 'time_finish': None, 'startup_user': None}
+    data['channels'][channel_id] = {'channel_id': channel_id, 'name': name, 'messages': [], 'standup_active': False, 'time_finish': None, 'startup_user': None}
 
     detail = {}
     for i, items in data['users'].items():
@@ -58,9 +59,10 @@ def channels_create(token, name, is_public):
     
     # adding to channel details, registering as a member of the channel
     # creator of the channel is also added
-    data['channel_details'][channel] = {'channel_id' : channel_id, 'name' : name, 'owner_members' : [], 'all_members' : [] , 'public': is_public, 'creator': u_id}
-    data['channel_details'][channel]['owner_members'].append(detail)
-    data['channel_details'][channel]['all_members'].append(detail)
+    data['channel_details'][channel_id] = {'channel_id' : channel_id, 'name' : name, 'owner_members' : [], 'all_members' : [] , 'public': is_public, 'creator': u_id}
+    data['channel_details'][channel_id]['owner_members'].append(detail)
+    data['channel_details'][channel_id]['all_members'].append(detail)
+    
     incChannel()
     #print(data['channel_details'])
 
