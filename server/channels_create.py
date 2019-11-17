@@ -68,4 +68,4 @@ def channels_create(token, name, is_public):
     incChannel()
     #print(data['channel_details'])
 
-    return channel_id
+    return {'channel_id': channel_id}

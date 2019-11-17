@@ -7,8 +7,7 @@ import jwt
 # importing the data file
 from data import *
 from token_check import *
-
-from uid_check import *
+from token_to_uid import token_to_uid
 from channel_check import *
 
 
@@ -31,27 +30,32 @@ def Join():
     return dumps(channel_join(token, channel_id))
 
 def channel_join(token, channel_id):
+
+    #Access error if token is invalid
     if token_check(token) == False:
-        raise AccessError('Invalid Token')
+        raise AccessError(description = 'Invalid Token')
 
+    #Value error if channel does not exist
     if id_check(channel_id):
-        raise ValueError("channel_id does not refer to a valid channel that the authorised user is part of.")
-        
+        raise ValueError(description = "Channel does not exist.")
 
-    global SECRET    
-    SECRET = getSecret()
-    Payload = jwt.decode(token, SECRET, algorithms='HS256')
-    u_id = Payload['u_id'] 
-
-    if uid_check(u_id) == False:
-        raise ValueError("invalid u_id.")      
+    u_id = token_to_uid(token)
 
     global data
     data = getData()
 
-
-
-    # value error when channel does not exist
+    for j, item in data['users'].items():
+        if u_id == item['u_id']:
+            #Checking user slackr permissions
+            if item['permission'] == 3:
+                #If user is a member and channel is private - no access
+                for i, items in data['channel_details'].items():
+                    if items['is_public'] == False:
+                        #Checking if channel is private
+                        raise AccessError(description = "Channel is private, user is not an admin or owner of the slackr")
+                is_admin = False
+            else:
+                is_admin = True 
 
     for i, channel in data['channels'].items():
         print(channel)
@@ -65,8 +69,7 @@ def channel_join(token, channel_id):
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
                     data['channel_details'][int(channel_id)]['all_members'].append(ret)
+                    #If user is an admin of the slackr, setting as owner member of channel
+                    if is_admin == True:
+                        data['channel_details'][int(channel_id)]['owner_members'].append(ret)
                     return ret
-            # if get to end of this loop, user isnt valid
-
-    # if here channel doesnt exist                
-

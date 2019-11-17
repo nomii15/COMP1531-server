@@ -8,6 +8,9 @@ def users_all(token):
     global data
     data = getData()
 
+    if token_check(token) == False:
+        raise ValueError(description = "Invalid Token")
+
     #return dictionary
     ret = {
         'users': []
