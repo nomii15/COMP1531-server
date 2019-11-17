@@ -18,6 +18,7 @@ from Error import *
 
 # importing the data file
 from data import *
+from token_to_uid import token_to_uid
 
 removeowner = Blueprint('removeowner', __name__)
 @removeowner.route('/channel/removeowner')
@@ -40,6 +41,14 @@ def channel_removeowner(token, channel_id, u_id):
 
     if uid_check(u_id) == False:
         raise ValueError(description = "invalid u_id.")
+
+    admin_u_id = token_to_uid(token)
+    
+    for j, item in data['users'].items():
+        if admin_u_id == item['u_id']:
+            #Checking user slackr permissions
+            if item['permission'] == 3:
+                raise AccessError(description = "Inviter is not an owner or admin of the slackr")
 
     # all valid, remove u_id from owner channel
     for i, channel in data['channels'].items():
