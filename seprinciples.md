@@ -20,8 +20,8 @@ Through the transition from iteration 2 to iteration 3, we felt the need to inco
 
 5. When it comes to testing of our functions, this needed to be changed from iteration2 due to complexity of how our group was calling the flask requests within the route of the function. This made it incredibly difficult to properly test our functions as we had to make a lot of assumptions about our test environment. For this iteration, we improved this by removing the flask requests into a flask specific function and the main function was called with the parameters it requires. This change makes it alot more efficient to properly test our code and make sure we are covering all edge cases. 
 
+6. In literation 3, we implement software engineering principle to make our code simpler. For testing functions in literation 1 and 2, we created one token for every registered user in user_test functions and one extra channel for the purpose of testing exceptions in channel_test functions. In this iteration, we delete the unused token and try to use the same channel for different exception testing to simplify our code.
 
-
-
+7. Moreover, we apply top-down thinking from the start of the whole project. For the functions to lower repetition like token_check, we do not create them until the same functionality occur in our code for more than two times. For the storage file of our project, data.py, we only create a template at the beginning and keep reinforce it during our work. For example, we do not include the storage of image in our data until the literation 3.
 
 
