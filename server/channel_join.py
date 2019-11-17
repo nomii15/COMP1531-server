@@ -26,7 +26,7 @@ join = Blueprint('join', __name__)
 @join.route('/channel/join', methods=['POST'])
 def Join():
     token = request.form.get('token')
-    channel_id = request.form.get('channel_id')
+    channel_id = int(request.form.get('channel_id'))
     return dumps(channel_join(token, channel_id))
 
 def channel_join(token, channel_id):
@@ -50,26 +50,33 @@ def channel_join(token, channel_id):
             if item['permission'] == 3:
                 #If user is a member and channel is private - no access
                 for i, items in data['channel_details'].items():
-                    if items['is_public'] == False:
+                    if items['public'] == False:
                         #Checking if channel is private
                         raise AccessError(description = "Channel is private, user is not an admin or owner of the slackr")
                 is_admin = False
             else:
                 is_admin = True 
-
+    print(data['channels'])
     for i, channel in data['channels'].items():
+        '''
         print(channel)
-        if channel['channel_id'] == int(channel_id):
+        print(i)
+        print(channel['channel_id'])
+        print(channel['channel_id'] == channel_id['channel_id'])
+        print(channel_id['channel_id'])
+        '''
+        if channel['channel_id'] == channel_id['channel_id']:
             # get dictionary of users details
+            #print(channel_id)
             for j, items in data['users'].items():
                 if u_id == items['u_id']:
-                    
                     ret = {}
                     ret['u_id'] = items['u_id']
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
-                    data['channel_details'][int(channel_id)]['all_members'].append(ret)
+                    data['channel_details'][channel_id]['all_members'].append(ret)
                     #If user is an admin of the slackr, setting as owner member of channel
                     if is_admin == True:
-                        data['channel_details'][int(channel_id)]['owner_members'].append(ret)
+                        data['channel_details'][channel_id]['owner_members'].append(ret)
                     return {}
+                    
