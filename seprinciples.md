@@ -1,46 +1,24 @@
-Throughout the course of writting functions from iteration2 to iteration3, some of 
-the refracturing changes that our group encorporated into the functions
-design are, 
+Through the transition from iteration 2 to iteration 3, we felt the need to incorporate some SE design principles in our code. Some of the changes we made throughout our functions are,
 
-1. Across a lot of the functions, similar processes were being done; e.g. getting a
-uid from a token. With this, helper functions were created to inprove consistency
-and to make sure our group was doing the same process to extract something. Examples 
-of this include token_check, member_check, token_to_uid. As a result, this reduce the code
-repetition by only having one written instance of it and meets the DRY criteria of
-not having the same piece of code writtem mulitple times accross multiple functions
+1. Across most of our functions, there were a few repetitve processes that we realised we were all writing up. For example tasks such as retreiving the user_id from the token or checking if a user was a channel owner, were tasks which we felt could be dealt with more efficiently. Therefore, to improve consistency across our functions in terms of how we perform these tasks as well as to reduce code repetition, we decided to create helper functions that we could all import and call from within our own functions. These were, 
 
-2. When writting some of the message functions, the orginial time complexity of 
-the function were very high (order 3 or 4 in most cases). As a result, this
-made the function difficult to understand (Opacity) and also adding a hiigh level of 
-needless complexity. After the refractoring of the code, most of the functions are
-around order 1 or 2, making it more time efficient when searching for an item. Particular
-functions were this was most evident was message reacts/unreacts and pin/unpin.
+        -token_check
+    
+        -member_check
+    
+        -token_to_uid
+    
+        -check_channel_owner
+    
+    Doing this, allowed us to meet the DRY criteria of not having the same piece of code written multiple times across multiple functions. 
 
-3. One of the problems which we initially had with the message id was that they 
-were originally related to the channel and not unique globally. i.e. each channel 
-would of had a message_id that was the same in another channel. this created problems
-when the frontend would request a message id that would appear in multiple channels.
-when attempting to modify our original code, the code was difficult to modify to 
-work with the modifications needed (immobility and rigidity). As a result of this, the message
-structure was rewritten and made such that the message id is unique to each message
-globally. This also helped reduce the coupling between the message id and the
-channel that message was asociated in.
+2. When completing some of the message functions, specifically message_edit, the time complexity of checking the owner of the message and editing the message was extremely high (sometimes O(n^4 )). This obviously bore some design smells such as opacity and needless complexity as some of these functions were difficult to read and understand. After refactoring the code, the message functions were greatly improved in terms of their complexity with most staying at a maximum of O(n^2 ).
 
-4. Common across a lot of the functions was the readability of the code. in most cases,
-although the logic seemed to work, it was very difficult to intrepret and gain an understanding
-what was actually going on. To solve this, functions were rewritten to make it
-clearer what exactly was happening throughout the logic. An example of this was
-in the admin userpermision change function, were a rethink of the structure and 
-logic was needed to better intrepret what was happening within that function.
+3. A major problem we encountered when attempting to run the server with the frontend was that the message id's we were assigning to each message sent was unique only to the channel the message was sent to and not to the complete application in a global sense. This proved to be an issue because there resulted messages in different channels having the same message id's. The problem occured when the frontend would request a message_id because obviously there were multiple messages with that id. When attempting to modify our code, we found it difficult because of the immobility and rigidity of our original code. As a result of this, the message structure was reworked, where we decided to make the message_id unique to the message in a global environment. This also helped reduce the coupling between the message id and the channel that message was asociated in.
 
-5. When it comes to testing of our functions, this needed to be changed from
-iteration2 due to complexity of how our group was calling the flask requests within
-the route of the function. This made it incredibly difficult to properly test our
-functions as we had to make a lot of assumption about our test environment. For this 
-iteration, this has been improved this by removing the flask requests into a flask specific function
-and the main function was called with the parameters it requires. This change makes
-it alot more efficient to properly test our code and make sure we are covering 
-all edge cases. 
+4. Common across a lot of the functions was the readability of the code. in most cases, although the logic seemed to work, it was very difficult to intrepret and gain an understanding what was actually going on. To solve this, functions were rewritten to make it clearer what exactly was happening throughout the logic. An example of this was in the admin userpermision change function, where a rethink of the structure and logic was needed to better intrepret what was happening within that function.
+
+5. When it comes to testing of our functions, this needed to be changed from iteration2 due to complexity of how our group was calling the flask requests within the route of the function. This made it incredibly difficult to properly test our functions as we had to make a lot of assumptions about our test environment. For this iteration, we improved this by removing the flask requests into a flask specific function and the main function was called with the parameters it requires. This change makes it alot more efficient to properly test our code and make sure we are covering all edge cases. 
 
 
 
