@@ -19,6 +19,7 @@ from token_to_uid import token_to_uid
 
 def message_pin(token, message_id):
     if token_check(token) == False:
+        raise ValueError(description = "Invalid Token")
         ret = {
             "code" : 400,
             "name": "AccessError",
@@ -41,6 +42,7 @@ def message_pin(token, message_id):
                         item['is_pinned'] = True
                         return dumps({})
                     else:
+                        raise ValueError(description = "Message already pinned")
                         ret = {
                             "code" : 400,
                             "name": "ValueError",
@@ -48,6 +50,7 @@ def message_pin(token, message_id):
                         }
                         return dumps(ret)
                 else:
+                    raise ValueError(description = "Not an authorised user")
                     ret = {
                         "code" : 400,
                         "name": "ValueError",
@@ -56,6 +59,7 @@ def message_pin(token, message_id):
                     return dumps(ret)
 
     #if you get to this logic, means you couldnt find message with messageId
+    raise ValueError(description = "Invalid Message ID")
     ret = {
         "code" : 400,
         "name": "ValueError",
