@@ -36,7 +36,7 @@ def test_authorisation():
 	#raise error if wanting to pin invalid message
 	with pytest.raises(ValueError, match = '*Not an authorised user*'):
 		message_pin(user1_token , message_id)
-		
+
 #test already pinned
 def test_pinned():
 	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
@@ -74,7 +74,7 @@ def test_valid():
 	pinned = False
 	for i, items in data['channels'].items():
 		for item in items['messages']:
-			if item['message_id'] == int(message_id) and item['is_pinned'] == False:
+			if item['message_id'] == int(message_id) and item['is_pinned'] == True:
 				pinned = True
 
 	assert pinned == True
