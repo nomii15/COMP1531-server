@@ -26,5 +26,5 @@ Through the transition from iteration 2 to iteration 3, we felt the need to inco
 
 8. In literation 3, we implement software engineering principle to make our code simpler. For testing functions in literation 1 and 2, we created one token for every registered user in user_test functions and one extra channel for the purpose of testing exceptions in channel_test functions. In this iteration, we delete the unused token and try to use the same channel for different exception testing to simplify our code.
 
-
+9. Our functions for checking invalid input only has single responsibility for one exception. For file channel_check, it used to have only one function in it which is responsible for checking invalid channel_id and members. It only returns True when both of the inputs are valid. We separate the function into member_check and channel_check to ensure each function is only responsible for one exception.
 
