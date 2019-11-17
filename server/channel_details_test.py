@@ -1,54 +1,39 @@
 import pytest
 import jwt
+from auth_register import auth_register
+from channels_create import channels_create
+from channel_details import channel_details
+from channel_invite import channel_invite
+#import Error.py
+from data import *
 
-SECRET = 'COMP1531'
 
-data = {
-    'channel_details':{
-        '1':{'name': 'channel1', 'all_members': ['001','002']},
-        '2':{'name': 'channel1', 'all_members': ['003','004']}
-    }
-}
+SECRET = getSecret()
 
-class test_detail():
-    def __init__(self, token, channel_id):
-        self.channel_id = channel_id
-        payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-        self.u_id = payload['u_id']
-        
-    def id_check(self):
-        for key, item in data['channel_details'].items():
-            if key == self.channel_id:
-                return True
-        raise ValueError("invalid channel_id")
-        
-    def member_check(self):
-        for member in data['channel_details'][self.channel_id]['all_members']:
-            if member == self.u_id:
-                return True
-        raise AccessError("not a member of the channel")
-        
-    def success(self):
-        return data['channel_details'][self.channel_id]
+def test_channel_details_success():
+    auth_register('qwe123@gmail.com', 'qwe12345', 'Vincent', 'Zhang')
+    auth_register('abcdef@gmail.com', 'secret123', 'ABC', 'Happy')    
+    token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    #unused token could be removed
+    token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
+    channel = channels_create(token1, 'ch1', True)
+    channel_id = channel['channel_id']
+    assert channel_details(token1, channel_id) == {'name': 'ch1', 'owner_members': [{'u_id': 1, 'name_first': 'Vincent', 'name_last': 'Zhang', 'profile_img_url': None}], 'all_members': [{'u_id': 1, 'name_first': 'Vincent', 'name_last': 'Zhang', 'profile_img_url': None}]}
 
-#return information about channel 1
-def test_1():
-    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
-    test1 = test_detail(token, '1')
-    assert test1.id_check() == True
-    assert test1.member_check() == True
-    assert test1.success() == {'name': 'channel1', 'all_members': ['001', '002']}
+    channel_invite(token1, channel_id, 2)
+    assert channel_details(token1, channel_id) == {'name': 'ch1', 'owner_members': [{'u_id': 1, 'name_first': 'Vincent', 'name_last': 'Zhang', 'profile_img_url': None}], 'all_members': [{'u_id': 1, 'name_first': 'Vincent', 'name_last': 'Zhang', 'profile_img_url': None}, {'u_id': 2, 'name_first': 'ABC', 'name_last': 'Happy', 'profile_img_url': None}]}
 
-#invalid channel_id
-def test_2():
-    token = jwt.encode({'u_id': '001'}, SECRET, algorithm='HS256')
-    test2 = test_detail(token, '3')
-    with pytest.raises(ValueError, match='*invalid channel_id*'):
-        test2.id_check()
+    assert channel_details(token2, channel_id) == {'name': 'ch1', 'owner_members': [{'u_id': 1, 'name_first': 'Vincent', 'name_last': 'Zhang', 'profile_img_url': None}], 'all_members': [{'u_id': 1, 'name_first': 'Vincent', 'name_last': 'Zhang', 'profile_img_url': None}, {'u_id': 2, 'name_first': 'ABC', 'name_last': 'Happy', 'profile_img_url': None}]}
 
-#not a member of the channel
-def test_3():
-    token = jwt.encode({'u_id': '003'}, SECRET, algorithm='HS256')
-    test3 = test_detail(token, '1')
-    with pytest.raises(AccessError, match='*not a member of the channel*'):
-        test2.member_check()
+def test_channel_details_invalid_channelid():
+    token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
+    with pytest.raises(ValueError, match='Invalid channel_id'):
+        channel_details(token1, 100)
+
+
+def test_channel_details_invalid_member():
+    auth_register('user3@gmail.com', 'secret12345', 'User', '3') 
+    token3 = jwt.encode({'u_id': 3}, SECRET, algorithm='HS256').decode('utf-8')
+    with pytest.raises(AccessError, match='Authorised user is not a member of this channel.'):
+        channel_details(token3, 1)
+
