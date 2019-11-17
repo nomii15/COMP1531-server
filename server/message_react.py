@@ -15,6 +15,14 @@ from token_check import token_check
 import jwt
 from token_to_uid import token_to_uid
 
+react = Blueprint('react', __name__)
+@react.route('/message/react', methods = ['POST'])
+def route():
+    message_id = request.form.get('message_id')
+    token = request.form.get('token')
+    react_id = request.form.get('react_id')
+
+    return dumps(message_react(token, message_id, react_id))
 
 def message_react(token, message_id, react_id):
     
@@ -68,14 +76,4 @@ def message_react(token, message_id, react_id):
         "name": "AccessError",
         "message" : "Invalid Message ID",
         }
-    return dumps(ret) 
-
-
-react = Blueprint('react', __name__)
-@react.route('/message/react', methods = ['POST'])
-def route():
-    message_id = request.form.get('message_id')
-    token = request.form.get('token')
-    react_id = request.form.get('react_id')
-
-    return dumps(message_react(token, message_id, react_id))
+    return dumps(ret)
