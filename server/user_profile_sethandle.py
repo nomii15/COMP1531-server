@@ -2,6 +2,7 @@ from json import dumps
 from flask import request, Blueprint
 import jwt
 from token_check import token_check
+from token_to_uid import token_to_uid
 from data import *
 
 
@@ -22,9 +23,7 @@ def user_profile_sethandle(token, handle):
         if item['handle'] == handle:
             raise ValueError(description = "handle has been used")
     #decode the token and get u_id of the authorised user
-    SECRET = getSecret()
-    payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = payload['u_id']
+    u_id = token_to_uid(token)
     #update the handle
     for key, item in data['users'].items():
         if key == u_id:
