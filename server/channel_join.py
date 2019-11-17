@@ -31,9 +31,11 @@ def Join():
 
 def channel_join(token, channel_id):
 
+    #Access error if token is invalid
     if token_check(token) == False:
         raise AccessError(description = 'Invalid Token')
 
+    #Value error if channel does not exist
     if id_check(channel_id):
         raise ValueError(description = "Channel does not exist.")
 
@@ -42,17 +44,18 @@ def channel_join(token, channel_id):
     global data
     data = getData()
 
-    for i, items in data['channel_details'].items():
-        if items['is_public'] == False:
-            #Checking if channel is private
-            for j, item in data['users'].items():
-                if u_id == item['u_id']:
-                #if permission is 3, does not have access
-                    if item['permission'] == 3:
-                    raise AccessError(description = "Channel is private, user is not an admin or owner of the slackr")
-
-
-    # value error when channel does not exist
+    for j, item in data['users'].items():
+        if u_id == item['u_id']:
+            #Checking user slackr permissions
+            if item['permission'] == 3:
+                #If user is a member and channel is private - no access
+                for i, items in data['channel_details'].items():
+                    if items['is_public'] == False:
+                        #Checking if channel is private
+                        raise AccessError(description = "Channel is private, user is not an admin or owner of the slackr")
+                is_admin = False
+            else:
+                is_admin = True 
 
     for i, channel in data['channels'].items():
         print(channel)
@@ -66,8 +69,7 @@ def channel_join(token, channel_id):
                     ret['name_first'] = items['name_first']
                     ret['name_last'] = items['name_last']
                     data['channel_details'][int(channel_id)]['all_members'].append(ret)
+                    #If user is an admin of the slackr, setting as owner member of channel
+                    if is_admin == True:
+                        data['channel_details'][int(channel_id)]['owner_members'].append(ret)
                     return ret
-            # if get to end of this loop, user isnt valid
-
-    # if here channel doesnt exist                
-
