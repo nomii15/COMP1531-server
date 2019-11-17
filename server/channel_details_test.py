@@ -14,7 +14,6 @@ def test_channel_details_success():
     auth_register('qwe123@gmail.com', 'qwe12345', 'Vincent', 'Zhang')
     auth_register('abcdef@gmail.com', 'secret123', 'ABC', 'Happy')    
     token1 = jwt.encode({'u_id': 1}, SECRET, algorithm='HS256').decode('utf-8')
-    #unused token could be removed
     token2 = jwt.encode({'u_id': 2}, SECRET, algorithm='HS256').decode('utf-8')
     channel = channels_create(token1, 'ch1', True)
     channel_id = channel['channel_id']
