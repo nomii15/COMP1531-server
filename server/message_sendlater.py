@@ -21,13 +21,18 @@ from channels_list import channels_list
 from message_send import message_send
 import time
 
+sendlater = Blueprint('/sendlater', __name__)
+@sendlater.route('/message/sendlater', methods = ['POST'])
+def route():
+    token = request.form.get('token')
+    channel_id = request.form.get('channel_id')
+    message = request.form.get('message')
+    time_sent = request.form.get('time_sent')
+    
+    return dumps(message_sendlater(token, channel_id, message, time_sent))
 
 def message_sendlater(token, channel_id, message, time_sent):
-    print(channel_id)
-    print(message)
-    print(time_sent)
     if token_check(token) == False:
-        print('in token check')
         raise ValueError(description = "Invalid Token")
         ret = {
             "code" : 400,
@@ -40,13 +45,10 @@ def message_sendlater(token, channel_id, message, time_sent):
     data = getData()
     channel_exists = False
     for i, items in data['channels'].items():
-        print(i)
-        print(items)
         if i == int(channel_id):
             channel_exists = True
 
     if channel_exists == False:
-        print('in channelid check')
         raise ValueError(description = "Invalid Channel ID")
         ret = {
             "code" : 400,
@@ -56,7 +58,6 @@ def message_sendlater(token, channel_id, message, time_sent):
         return dumps(ret) 
 
     if len(message) > 1000:
-        print('in len check')
         raise ValueError(description = "Invalid Message")
         ret = {
             "code" : 400,
@@ -65,11 +66,8 @@ def message_sendlater(token, channel_id, message, time_sent):
         }
         return dumps(ret)
         
-    print(time_sent)
     now = datetime.now()
-    print(datetime.timestamp(now))
     if int(time_sent) < int(datetime.timestamp(now)):
-        print('in time check')
         raise ValueError(description = "Invalid Time")
         ret = {
             "code" : 400,
@@ -82,22 +80,10 @@ def message_sendlater(token, channel_id, message, time_sent):
 
     timeout = int(time_sent) - int(datetime.timestamp(now))
     while int(datetime.timestamp(now)) != time_sent:
-        print('in the while loop')
         time.sleep(timeout)
-        print('woke up from sleep')
         message_id = message_send(token, channel_id, message)
-        print(f'message id  is = {message_id}')
         return dumps(message_id)
         
     
 
 
-sendlater = Blueprint('/sendlater', __name__)
-@sendlater.route('/message/sendlater', methods = ['POST'])
-def route():
-    token = request.form.get('token')
-    channel_id = request.form.get('channel_id')
-    message = request.form.get('message')
-    time_sent = request.form.get('time_sent')
-    
-    return dumps(message_sendlater(token, channel_id, message, time_sent))
