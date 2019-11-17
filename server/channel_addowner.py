@@ -33,7 +33,7 @@ def channel_addowner(token, channel_id, u_id):
         raise AccessError(description = 'Invalid Token')
 
     #exceptions
-    if id_check(channel_id):
+    if id_check(channel_id) == False:
         raise ValueError(description = "Channel_id does not refer to a valid channel that the authorised user is part of.")
 
     if member_check(token, channel_id) == False:
