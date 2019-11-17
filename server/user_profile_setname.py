@@ -1,8 +1,9 @@
 from json import dumps
 from flask import request, Blueprint
 import jwt
+from token_to_uid import token_to_uid
 from data import *
-from token_check import *
+from token_check import token_check
 
 SETNAME = Blueprint('SETNAME', __name__)
 
@@ -19,9 +20,7 @@ def user_profile_setname(token, name_first, name_last):
     if len(name_last) < 1 or len(name_last) > 50:
         raise ValueError(description = "incorrect last name length")
     #decode the token and get u_id of the authorised user
-    SECRET = getSecret()
-    payload = jwt.decode(token, SECRET, algorithms=['HS256'])
-    u_id = payload['u_id']
+    u_id = token_to_uid(token)
     #update the name
     for key, item in data['users'].items():
         if key == u_id:
