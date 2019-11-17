@@ -15,9 +15,10 @@ AccessError when:
     The authorised user is not an owner of the slackr, or an owner of this channel
 
 '''
-def setup():
-    #global data
-    #data = {}
+
+def test_value_error_channel():
+    global data
+    data = getData()
 
     register1 = auth_register("validemail1@gmail.com", "validpassword1", "USER1", "validname1")
     token1 = register1['token']
@@ -34,7 +35,6 @@ def setup():
     channel_id1 = channels_create(token1, 'channel1', True)
     channel_id3 = channels_create(token3, 'channel3', True)
 
-def test_value_error_channel():
     #channel id does not exist
     with pytest.raises(ValueError,match=r"*"):
         channel_addowner(token1,1,u_id1)

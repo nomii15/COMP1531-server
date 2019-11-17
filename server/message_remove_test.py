@@ -31,16 +31,20 @@ def test_incorrect_user():
 	user1_token = user1['token']
 	user2 = auth_register("validemail3@gmail.com", "validpassword1", "INCORRECT USER2", "validname3")
 	user2_token = user2['token']
+	
 	#owner creates a channel
 	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = channelResponse['channel_id']
+	
 	#two users join that chanenl
 	channel_join(user2_token, channel_id)
 	channel_join(user1_token, channel_id)
+	
 	#user 1 sends a message
 	message = "A message you send"
 	message_sent = message_send(user1_token, channel_id, message)
 	message_id = message_sent['message_id']
+	
 	#raise error if user 2 tries to remove
 	with pytest.raises(ValueError, match = '*Not an authorised user*'):
 		message_remove(user2_token , message_id)
@@ -51,15 +55,19 @@ def test_user_removes():
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
 	user1_token = user1['token']
+	
 	#owner creates a channel
 	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = channelResponse['channel_id']
+	
 	#two users join that chanenl
 	channel_join(user1_token, channel_id)
+	
 	#user 1 sends a message
 	message = "A message you send"
 	message_sent = message_send(user1_token, channel_id, message)
 	message_id = message_sent['message_id']
+	
 	#raise error if user 2 tries to remove
 	message_remove(user1_token, message_id)
 	i = False
@@ -76,15 +84,19 @@ def test_owner_removes():
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
 	user1_token = user1['token']
+	
 	#owner creates a channel
 	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = channelResponse['channel_id']
+	
 	#two users join that chanenl
 	channel_join(user1_token, channel_id)
+	
 	#user 1 sends a message
 	message = "A message you send"
 	message_sent = message_send(user1_token, channel_id, message)
 	message_id = message_sent['message_id']
+	
 	#raise error if user 2 tries to remove
 	message_remove(owner_token, message_id)
 	i = False

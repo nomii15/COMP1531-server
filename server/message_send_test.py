@@ -1,5 +1,6 @@
 from message_send import message_send
 from channels_create import channels_create
+from channel_join import channel_join
 from auth_register import auth_register
 from data import *
 import pytest
@@ -23,9 +24,11 @@ def test_incorrect_user():
 	owner_token = owner['token']
 	user1 = auth_register("validemail2@gmail.com", "validpassword1", "INCORRECT USER1", "validname2")
 	user1_token = user1['token']
+	
 	#owner creates a channel
 	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = channelResponse['channel_id']
+	
 	#user 1 sends a message to channel not apart of
 	message = "A message you send"
 	with pytest.raises(ValueError, match = '*Not an authorised user*'):
@@ -33,14 +36,22 @@ def test_incorrect_user():
 
 #valid cases
 def test_valid_case():
+	owner = auth_register("validemail1@gmail.com", "validpassword1", "OWNER1", "validname1")
+	owner_token = owner['token']
 	user = auth_register("validemail1@gmail.com", "validpassword1", "validname", "validname")
-	token1 = user['token']
+	user1_token = user['token']
 		
-	channelResponse = channels_create(token1, "My Channel", False)
+	channelResponse = channels_create(owner_token, "My Channel", True)
 	channel_id = int(channelResponse['channel_id'])
-		
-	message = 'A valid message'	
+	
+	channel_join(user1_token, channel_id)	
+	
 	global Message
-	message_id = getMessage()
+	expectedMessageId = getMessage()
 
-	assert (message_send(token1, channel_id, message) == {'message_id': message_id})
+	message = "A message you send"
+	message_sent = message_send(user1_token, channel_id, message)
+	message_id = message_sent['message_id']
+
+	assert message_id == expectedMessageId
+

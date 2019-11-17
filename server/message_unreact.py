@@ -19,6 +19,7 @@ from token_to_uid import token_to_uid
 def message_unreact(token, message_id, react_id):
     
     if int(react_id) != 1:
+        raise ValueError(description='Invalid React ID')
         ret = {
             "code" : 400,
             "name": "ValueError",
@@ -27,6 +28,7 @@ def message_unreact(token, message_id, react_id):
         return dumps(ret)
 
     if token_check(token) == False:
+        raise AccessError('Invalid Token')
         ret = {
             "code" : 400,
             "name": "AccessError",
@@ -48,6 +50,7 @@ def message_unreact(token, message_id, react_id):
                         if u_id == item['u_id']:
                             react['is_this_user_reacted'] = False
                         else:
+                            raise ValueError(description='Already unreacted')
                             ret = {
                                 "code" : 400,
                                 "name": "ValueError",
@@ -55,7 +58,8 @@ def message_unreact(token, message_id, react_id):
                             }
                             return dumps(ret)
                         return dumps({}) 
-
+                        
+    raise ValueError(description='Invalid Message ID')
     ret = {
         "code" : 400,
         "name": "AccessError",
